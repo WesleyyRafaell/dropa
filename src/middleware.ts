@@ -2,9 +2,22 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
+const publicRoutes = [
+	{ path: '/login', whenAuthenticated: 'redirect' },
+	{ path: '/login/google', whenAuthenticated: 'redirect' },
+	{ path: '/login/callback', whenAuthenticated: 'redirect' },
+	{ path: '/register', whenAuthenticated: 'redirect' },
+	{ path: '/', whenAuthenticated: 'next' },
+] as const;
+
 export async function middleware(req: NextRequest) {
+	const path = req.nextUrl.pathname;
+	const publicPath = publicRoutes.find((route) => route.path === path);
+
+	// ✅ Crie uma única instância de resposta
 	const res = NextResponse.next();
 
+	// ✅ Use essa resposta para setar cookies
 	const supabase = createServerClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL!,
 		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,21 +38,18 @@ export async function middleware(req: NextRequest) {
 	} = await supabase.auth.getUser();
 
 	const isAuth = !!user;
-	const isLoginPage = req.nextUrl.pathname === '/login';
 
-	// Se não autenticado e tentando acessar rota privada
-	if (!isAuth && !isLoginPage) {
-		return NextResponse.redirect(new URL('/login', req.url));
-	}
+	// 🧠 Lógica da rota
+	if (!isAuth && publicPath) return res;
 
-	// Se autenticado e acessando login, redireciona pra /
-	if (isAuth && isLoginPage) {
-		return NextResponse.redirect(new URL('/', req.url));
-	}
+	if (!isAuth && !publicPath) return NextResponse.redirect(new URL('/login', req.url));
+
+	if (isAuth && publicPath?.whenAuthenticated === 'redirect')
+		return NextResponse.redirect(new URL('/dashboard', req.url));
 
 	return res;
 }
 
 export const config = {
-	matcher: ['/dashboard'],
+	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
 };
