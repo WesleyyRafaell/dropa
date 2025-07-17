@@ -1,7 +1,7 @@
 'use server';
 
-import { loginWithEmailAndPassword, loginWithGoogle, logOut, signUp } from './service';
 import { redirect } from 'next/navigation';
+import { SupabaseAuthRepository } from './repository';
 
 interface ILoginActionProps {
 	email: string;
@@ -9,15 +9,17 @@ interface ILoginActionProps {
 }
 
 export async function loginWithEmailAndPasswordAction({ email, password }: ILoginActionProps) {
-	const result = await loginWithEmailAndPassword(email, password);
+	const result = await SupabaseAuthRepository.signInWithEmailAndPassword(email, password);
 
-	if (!result.success) return { success: false, error: result.error };
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
 
-	redirect('/');
+	return { success: true };
 }
 
 export async function loginWithGoogleAction() {
-	const result = await loginWithGoogle();
+	const result = await SupabaseAuthRepository.signInWithGoogle();
 
 	if (!result.success) return { success: false, error: result.error };
 
@@ -25,7 +27,7 @@ export async function loginWithGoogleAction() {
 }
 
 export async function logOutAction() {
-	const result = await logOut();
+	const result = await SupabaseAuthRepository.logOut();
 
 	if (!result.success) return { success: false, error: result.error };
 
@@ -33,7 +35,9 @@ export async function logOutAction() {
 }
 
 export async function signUpAction(email: string, password: string) {
-	const result = await signUp(email, password);
+	const result = await SupabaseAuthRepository.signUp(email, password);
 
 	if (!result.success) return { success: false, error: result.error };
+
+	return { success: true };
 }
