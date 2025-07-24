@@ -1,16 +1,13 @@
 import { supabaseServer } from '@/lib/server';
-import LoginForm from './form';
 import { redirect } from 'next/navigation';
 
-const Login = async () => {
+export default async function PrivateLayout({ children }: { children: React.ReactNode }) {
 	const supabase = await supabaseServer();
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	if (user) redirect('/dashboard');
+	if (!user) redirect('/login');
 
-	return <LoginForm />;
-};
-
-export default Login;
+	return <>{children}</>;
+}
