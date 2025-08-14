@@ -3,8 +3,10 @@
 import { createGroupAction } from '@/features/groups/action';
 import { useState, useTransition } from 'react';
 import { IViewProps } from './view';
+import { useUserStore } from '@/store/user-store';
 
 const useDashboard = ({ groups }: IViewProps) => {
+	const { user } = useUserStore();
 	const [isPending, startTransition] = useTransition();
 	const [groupList, setGroupList] = useState(groups);
 
@@ -12,7 +14,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 		startTransition(async () => {
 			const result = await createGroupAction({
 				name: 'Novo card',
-				userId: 'f2b72014-1c53-45ca-814f-3dc4bf2f3519',
+				userId: user?.id || '',
 			});
 
 			if (result?.success && result?.group) {

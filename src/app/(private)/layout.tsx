@@ -1,5 +1,6 @@
 import { supabaseServer } from '@/lib/server';
 import { redirect } from 'next/navigation';
+import { UserClientBridge } from './user-client-bridge';
 
 export default async function PrivateLayout({ children }: { children: React.ReactNode }) {
 	const supabase = await supabaseServer();
@@ -9,5 +10,10 @@ export default async function PrivateLayout({ children }: { children: React.Reac
 
 	if (!user) redirect('/login');
 
-	return <>{children}</>;
+	return (
+		<>
+			<UserClientBridge user={user} />
+			{children}
+		</>
+	);
 }
