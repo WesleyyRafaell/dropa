@@ -9,6 +9,7 @@ export interface IGroupsRepository {
 		name: string,
 		userId: string,
 	): Promise<{ success: true; data: IGroup } | { success: false; error: string }>;
+	deleteGroup(groupId: string): Promise<{ success: true } | { success: false; error: string }>;
 }
 
 export const GroupsRepository: IGroupsRepository = {
@@ -46,6 +47,17 @@ export const GroupsRepository: IGroupsRepository = {
 		return {
 			success: true,
 			data: data,
+		};
+	},
+	async deleteGroup(userId) {
+		const supabase = await supabaseServer();
+
+		const { error } = await supabase.from('groups').delete().eq('id', userId);
+
+		if (error) return { success: false, error: error.message };
+
+		return {
+			success: true,
 		};
 	},
 };

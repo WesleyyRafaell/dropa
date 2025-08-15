@@ -1,9 +1,10 @@
 'use client';
 
-import { createGroupAction } from '@/features/groups/action';
+import { createGroupAction, deleteGroupAction } from '@/features/groups/action';
 import { useState, useTransition } from 'react';
 import { IViewProps } from './view';
 import { useUserStore } from '@/store/user-store';
+import { toast } from 'react-toastify';
 
 const useDashboard = ({ groups }: IViewProps) => {
 	const { user } = useUserStore();
@@ -17,8 +18,32 @@ const useDashboard = ({ groups }: IViewProps) => {
 				userId: user?.id || '',
 			});
 
+			if (result?.error) {
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			}
+
 			if (result?.success && result?.group) {
 				setGroupList((prev) => [result.group, ...(prev ?? [])]);
+				toast.success('Sucesso ao criar grupo.');
+			}
+		});
+	};
+
+	const handleDeleteGroup = (id: string) => {
+		const groups = groupList?.filter((group) => group?.id !== id);
+		setGroupList(groups);
+		startTransition(async () => {
+			const result = await deleteGroupAction({
+				groupId: id,
+			});
+
+			if (result?.error) {
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			}
+
+			if (result?.success) {
+				toast.success('Sucesso ao apagar grupo.');
+				return;
 			}
 		});
 	};
@@ -27,6 +52,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 		isPending,
 		groupList,
 		handleCreteNewGroup,
+		handleDeleteGroup,
 	};
 };
 

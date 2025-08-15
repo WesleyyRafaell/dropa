@@ -11,7 +11,7 @@ export interface IViewProps {
 }
 
 const View = ({ groups }: IViewProps) => {
-	const { groupList, handleCreteNewGroup, isPending } = useDashboard({ groups });
+	const { groupList, handleCreteNewGroup, handleDeleteGroup, isPending } = useDashboard({ groups });
 
 	return (
 		<div className="flex justify-center">
@@ -30,12 +30,17 @@ const View = ({ groups }: IViewProps) => {
 									<VscNewFolder className="text-white text-2xl" />
 								</div>
 								{isPending ? (
-									<FolderContainer>
+									<FolderContainer noAction>
 										<span className="loading loading-ring loading-xl text-white text-2xl"></span>
 									</FolderContainer>
 								) : null}
 								{groupList?.map((group) => (
-									<FolderContainer key={group.id}>
+									<FolderContainer
+										id={group?.id}
+										key={group.id}
+										name={group.name}
+										deleteGroup={() => handleDeleteGroup(group?.id)}
+									>
 										<p className="text-white font-medium">{group.name}</p>
 									</FolderContainer>
 								))}
