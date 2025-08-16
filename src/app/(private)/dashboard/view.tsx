@@ -41,7 +41,26 @@ const View = ({ groups }: IViewProps) => {
 										name={group.name}
 										deleteGroup={() => handleDeleteGroup(group?.id)}
 									>
-										<p className="text-white font-medium">{group.name}</p>
+										<input
+											type="text"
+											value={group.name}
+											placeholder={group.name}
+											className="
+											input
+											input-ghost
+										placeholder-white
+											pl-1
+											text-base
+											font-medium
+											border-b
+										border-b-white
+											focus:border-b
+										focus:border-white
+											focus:bg-transparent
+											focus:ring-0
+											focus:outline-none
+										!text-white"
+										/>
 									</FolderContainer>
 								))}
 							</div>
