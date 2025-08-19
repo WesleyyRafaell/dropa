@@ -1,6 +1,6 @@
 'use client';
 
-import { FolderContainer, Logo, Table } from '@/components/atoms';
+import { FolderContainer, FolderLoading, Logo, Table } from '@/components/atoms';
 import { VscNewFolder } from 'react-icons/vsc';
 import { CardText, NewCard } from '@/components/molecules';
 import { IGroup } from '@/features/groups/models';
@@ -11,7 +11,8 @@ export interface IViewProps {
 }
 
 const View = ({ groups }: IViewProps) => {
-	const { groupList, handleCreteNewGroup, handleDeleteGroup, isPending } = useDashboard({ groups });
+	const { groupList, handleCreteNewGroup, handleEditNewGroup, handleDeleteGroup, isPending } =
+		useDashboard({ groups });
 
 	return (
 		<div className="flex justify-center">
@@ -29,39 +30,15 @@ const View = ({ groups }: IViewProps) => {
 								>
 									<VscNewFolder className="text-white text-2xl" />
 								</div>
-								{isPending ? (
-									<FolderContainer noAction>
-										<span className="loading loading-ring loading-xl text-white text-2xl"></span>
-									</FolderContainer>
-								) : null}
+								{isPending ? <FolderLoading /> : null}
 								{groupList?.map((group) => (
 									<FolderContainer
 										id={group?.id}
 										key={group.id}
 										name={group.name}
 										deleteGroup={() => handleDeleteGroup(group?.id)}
-									>
-										<input
-											type="text"
-											value={group.name}
-											placeholder={group.name}
-											className="
-											input
-											input-ghost
-										placeholder-white
-											pl-1
-											text-base
-											font-medium
-											border-b
-										border-b-white
-											focus:border-b
-										focus:border-white
-											focus:bg-transparent
-											focus:ring-0
-											focus:outline-none
-										!text-white"
-										/>
-									</FolderContainer>
+										editGroup={handleEditNewGroup}
+									></FolderContainer>
 								))}
 							</div>
 						</div>

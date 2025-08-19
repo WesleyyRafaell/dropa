@@ -1,6 +1,6 @@
 'use server';
 
-import { ICreateGroupProps, IDeleteGroupProps } from '@/types/features';
+import { IGroupProps, IDeleteGroupProps } from '@/types/features';
 import { GroupsRepository } from './repository';
 
 export async function getAllGroupsAction() {
@@ -13,7 +13,7 @@ export async function getAllGroupsAction() {
 	return { success: true, groups: result };
 }
 
-export async function createGroupAction({ name, userId }: ICreateGroupProps) {
+export async function createGroupAction({ name, userId }: IGroupProps) {
 	const result = await GroupsRepository.createGroup(name, userId);
 
 	if (!result.success) {
@@ -21,6 +21,16 @@ export async function createGroupAction({ name, userId }: ICreateGroupProps) {
 	}
 
 	return { success: true, group: result.data };
+}
+
+export async function editGroupAction({ name, userId }: IGroupProps) {
+	const result = await GroupsRepository.editGroup(name, userId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true };
 }
 
 export async function deleteGroupAction({ groupId }: IDeleteGroupProps) {

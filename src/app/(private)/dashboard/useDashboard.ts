@@ -1,14 +1,16 @@
 'use client';
 
-import { createGroupAction, deleteGroupAction } from '@/features/groups/action';
+import { createGroupAction, deleteGroupAction, editGroupAction } from '@/features/groups/action';
 import { useState, useTransition } from 'react';
 import { IViewProps } from './view';
 import { useUserStore } from '@/store/user-store';
 import { toast } from 'react-toastify';
+import { useDebouncedCallback } from 'use-debounce';
 
 const useDashboard = ({ groups }: IViewProps) => {
 	const { user } = useUserStore();
 	const [isPending, startTransition] = useTransition();
+	const [, startTransitionEdit] = useTransition();
 	const [groupList, setGroupList] = useState(groups);
 
 	const handleCreteNewGroup = () => {
@@ -19,7 +21,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 			});
 
 			if (result?.error) {
-				toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu na criação.');
 			}
 
 			if (result?.success && result?.group) {
@@ -28,6 +30,22 @@ const useDashboard = ({ groups }: IViewProps) => {
 			}
 		});
 	};
+
+	const handleEditNewGroup = useDebouncedCallback((idGroup: string, newNameGroup: string) => {
+		startTransitionEdit(async () => {
+			const result = await editGroupAction({
+				userId: idGroup,
+				name: newNameGroup,
+			});
+
+			if (result?.error) {
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu na edição.');
+			}
+			if (result?.success) {
+				toast.success('Nome do grupo editado.');
+			}
+		});
+	}, 800);
 
 	const handleDeleteGroup = (id: string) => {
 		const groups = groupList?.filter((group) => group?.id !== id);
@@ -52,6 +70,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 		isPending,
 		groupList,
 		handleCreteNewGroup,
+		handleEditNewGroup,
 		handleDeleteGroup,
 	};
 };

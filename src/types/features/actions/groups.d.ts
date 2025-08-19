@@ -1,4 +1,4 @@
-export interface ICreateGroupProps {
+export interface IGroupProps {
 	name: string;
 	userId: string;
 }
