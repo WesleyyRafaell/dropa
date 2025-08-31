@@ -10,9 +10,17 @@ interface IFolderContainerProps {
 	noAction?: boolean;
 	deleteGroup?: () => void;
 	editGroup?: (idGroup: string, newNameGroup: string) => void;
+	selectGroup?: (idGroup: string, nameGroup: string) => void;
 }
 
-const FolderContainer = ({ id, name, noAction, deleteGroup, editGroup }: IFolderContainerProps) => {
+const FolderContainer = ({
+	id,
+	name,
+	noAction,
+	deleteGroup,
+	editGroup,
+	selectGroup,
+}: IFolderContainerProps) => {
 	const [inputValue, setInputValue] = useState(name);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +31,7 @@ const FolderContainer = ({ id, name, noAction, deleteGroup, editGroup }: IFolder
 	};
 
 	return (
-		<div className="indicator group">
+		<div className="indicator group" onClick={() => selectGroup?.(id || '', inputValue || '')}>
 			{!noAction ? (
 				<span
 					onClick={() => {

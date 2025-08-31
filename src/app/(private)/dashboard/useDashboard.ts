@@ -1,17 +1,27 @@
 'use client';
 
 import { createGroupAction, deleteGroupAction, editGroupAction } from '@/features/groups/action';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { IViewProps } from './view';
 import { useUserStore } from '@/store/user-store';
 import { toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
+import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
+import { IGroup } from '@/features/groups/models';
 
 const useDashboard = ({ groups }: IViewProps) => {
 	const { user } = useUserStore();
 	const [isPending, startTransition] = useTransition();
 	const [, startTransitionEdit] = useTransition();
-	const [groupList, setGroupList] = useState(groups);
+	const [groupList, setGroupList] = useState(groups || []);
+	const { setGroupId, setGroupName, groupId } = FileManagerPanelStore();
+
+	useEffect(() => {
+		if (!groupId) {
+			selectFirstGroup();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [groupId]);
 
 	const handleCreteNewGroup = () => {
 		startTransition(async () => {
@@ -32,6 +42,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 	};
 
 	const handleEditNewGroup = useDebouncedCallback((idGroup: string, newNameGroup: string) => {
+		setGroupName(newNameGroup);
 		startTransitionEdit(async () => {
 			const result = await editGroupAction({
 				userId: idGroup,
@@ -61,9 +72,33 @@ const useDashboard = ({ groups }: IViewProps) => {
 
 			if (result?.success) {
 				toast.success('Sucesso ao apagar grupo.');
+				if (id === groupList[groupList.length - 1].id) {
+					selectLastGroup(groups);
+				}
 				return;
 			}
 		});
+	};
+
+	const selectLastGroup = (groups: IGroup[] | undefined) => {
+		const lastGroup = groups && groups.length > 0 ? groups[groups.length - 1] : null;
+
+		if (!lastGroup?.id) return;
+
+		handleSelectGroup(lastGroup?.id, lastGroup?.name);
+	};
+
+	const selectFirstGroup = () => {
+		const firstGroup = groupList && groupList.length > 0 ? groupList[0] : null;
+
+		if (!firstGroup?.id) return;
+
+		handleSelectGroup(firstGroup?.id, firstGroup?.name);
+	};
+
+	const handleSelectGroup = (id: string, name: string) => {
+		setGroupId(id);
+		setGroupName(name || '');
 	};
 
 	return {
@@ -72,6 +107,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 		handleCreteNewGroup,
 		handleEditNewGroup,
 		handleDeleteGroup,
+		handleSelectGroup,
 	};
 };
 
