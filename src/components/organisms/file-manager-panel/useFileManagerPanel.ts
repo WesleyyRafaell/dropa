@@ -35,6 +35,7 @@ const useFileManagerPanel = () => {
 		isPending,
 		reminders,
 		groupName,
+		groupId,
 	};
 };
 

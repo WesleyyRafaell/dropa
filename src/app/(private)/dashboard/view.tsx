@@ -18,6 +18,7 @@ const View = ({ groups }: IViewProps) => {
 		handleDeleteGroup,
 		handleSelectGroup,
 		isPending,
+		loadingDeleteGroup,
 	} = useDashboard({ groups });
 
 	return (
@@ -42,6 +43,7 @@ const View = ({ groups }: IViewProps) => {
 										id={group?.id}
 										key={group.id}
 										name={group.name}
+										loadingDeleteGroup={loadingDeleteGroup}
 										deleteGroup={() => handleDeleteGroup(group?.id)}
 										editGroup={handleEditNewGroup}
 										selectGroup={handleSelectGroup}

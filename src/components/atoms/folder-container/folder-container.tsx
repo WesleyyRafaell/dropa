@@ -8,6 +8,7 @@ interface IFolderContainerProps {
 	name?: string;
 	children?: React.ReactNode;
 	noAction?: boolean;
+	loadingDeleteGroup: boolean;
 	deleteGroup?: () => void;
 	editGroup?: (idGroup: string, newNameGroup: string) => void;
 	selectGroup?: (idGroup: string, nameGroup: string) => void;
@@ -17,6 +18,7 @@ const FolderContainer = ({
 	id,
 	name,
 	noAction,
+	loadingDeleteGroup,
 	deleteGroup,
 	editGroup,
 	selectGroup,
@@ -83,19 +85,29 @@ const FolderContainer = ({
 
 			<dialog id={id} className="modal">
 				<div className="modal-box">
-					<h3 className="font-bold text-lg">Hello!</h3>
-					<p className="py-4">
-						Deseja deletar o grupo <span className="font-bold">{name}</span>?
-					</p>
-					<p className="font-light text-[14px]">Esta ação é irreversível</p>
-					<div className="modal-action">
-						<button className="btn btn-primary" onClick={deleteGroup}>
-							Deletar
-						</button>
-						<form method="dialog">
-							<button className="btn btn-outline btn-accent">Cancelar</button>
-						</form>
-					</div>
+					{loadingDeleteGroup ? (
+						<div className="h-40 flex justify-center items-center">
+							<span className="loading loading-ring loading-xl text-primary text-2xl"></span>
+						</div>
+					) : null}
+
+					{!loadingDeleteGroup ? (
+						<div className="h-40">
+							<h3 className="font-bold text-lg">Hello!</h3>
+							<p className="py-4">
+								Deseja deletar o grupo <span className="font-bold">{name}</span>?
+							</p>
+							<p className="font-light text-[14px]">Esta ação é irreversível</p>
+							<div className="modal-action">
+								<button className="btn btn-primary" onClick={deleteGroup}>
+									Deletar
+								</button>
+								<form method="dialog">
+									<button className="btn btn-outline btn-accent">Cancelar</button>
+								</form>
+							</div>
+						</div>
+					) : null}
 				</div>
 			</dialog>
 		</div>
