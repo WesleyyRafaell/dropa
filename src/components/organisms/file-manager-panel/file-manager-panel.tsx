@@ -4,7 +4,14 @@ import React from 'react';
 import useFileManagerPanel from './useFileManagerPanel';
 
 const FileManagerPanel = () => {
-	const { reminders, isPending, groupName, groupId } = useFileManagerPanel();
+	const {
+		reminders,
+		isPending,
+		groupName,
+		groupId,
+		createNewReminder,
+		isPendingCreateNewReminder,
+	} = useFileManagerPanel();
 
 	return (
 		<div className="bg-white rounded-3xl p-4">
@@ -37,7 +44,10 @@ const FileManagerPanel = () => {
 							/>
 							<div className="tab-content bg-base-100 border-base-300 p-6">
 								<div className="grid grid-cols-4 gap-4">
-									<NewCard />
+									<NewCard
+										createNewReminder={createNewReminder}
+										isPendingCreateNewReminder={isPendingCreateNewReminder}
+									/>
 									{reminders?.map((reminder) => (
 										<CardText key={reminder?.id} title={reminder?.title} text={reminder?.content} />
 									))}

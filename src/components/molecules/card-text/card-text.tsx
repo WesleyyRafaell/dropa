@@ -6,11 +6,16 @@ interface ICardTextProps {
 	text?: string;
 }
 
-const CardText = ({ title, text }: ICardTextProps) => {
+const CardText = ({ text }: ICardTextProps) => {
 	return (
 		<Card>
-			<h2 className="card-title">{title}</h2>
-			<p>{text}</p>
+			<textarea
+				className="textarea h-24 bg-transparent
+				 border-white textarea-md  focus:shadow-none
+				 focus:outline-none focus:ring-0 text-white"
+				value={text}
+				placeholder="Bio"
+			></textarea>
 		</Card>
 	);
 };

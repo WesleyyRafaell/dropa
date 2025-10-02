@@ -13,12 +13,12 @@ export async function getAllRemindersAction(groupId: string) {
 	return { success: true, reminders: result };
 }
 
-export async function createReminderAction({ content, title, groupId }: IReminderProps) {
-	const result = await RemindersRepository.createReminder(title, content, groupId);
+export async function createReminderAction({ content, groupId }: IReminderProps) {
+	const result = await RemindersRepository.createReminder('', content, groupId);
 
 	if (!result.success) {
 		return { success: false, error: result.error };
 	}
 
-	return { success: true, group: result.data };
+	return { success: true, reminder: result.data };
 }

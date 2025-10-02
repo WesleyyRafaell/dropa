@@ -1,4 +1,4 @@
-import { getAllRemindersAction } from '@/features/reminders/action';
+import { createReminderAction, getAllRemindersAction } from '@/features/reminders/action';
 import { IReminder } from '@/features/reminders/models';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 import { useEffect, useState, useTransition } from 'react';
@@ -8,6 +8,7 @@ const useFileManagerPanel = () => {
 	const { groupId, groupName } = FileManagerPanelStore();
 	const [isPending, startTransition] = useTransition();
 	const [reminders, setReminders] = useState<IReminder[]>([]);
+	const [isPendingCreateNewReminder, startTransitionCreateNewReminder] = useTransition();
 
 	useEffect(() => {
 		getAllRemindersById(groupId);
@@ -31,11 +32,30 @@ const useFileManagerPanel = () => {
 		});
 	};
 
+	const createNewReminder = () => {
+		if (isPendingCreateNewReminder) return;
+
+		startTransitionCreateNewReminder(async () => {
+			const result = await createReminderAction({ content: 'Novo lembrete', groupId, title: '' });
+
+			if (result?.error) {
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu na criação do lembrete.');
+			}
+
+			if (result?.success && result?.reminder) {
+				setReminders((prev) => [result.reminder, ...(prev ?? [])]);
+				toast.success('Sucesso ao criar lembrete.');
+			}
+		});
+	};
+
 	return {
 		isPending,
 		reminders,
 		groupName,
 		groupId,
+		createNewReminder,
+		isPendingCreateNewReminder,
 	};
 };
 
