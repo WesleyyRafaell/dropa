@@ -22,3 +22,13 @@ export async function createReminderAction({ content, groupId }: IReminderProps)
 
 	return { success: true, reminder: result.data };
 }
+
+export async function deleteReminderAction(reminderId: string) {
+	const result = await RemindersRepository.deleteReminder(reminderId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true };
+}

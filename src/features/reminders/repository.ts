@@ -14,7 +14,9 @@ export interface IRemindersRepository {
 		name: string,
 		userId: string,
 	): Promise<{ success: true } | { success: false; error: string }>;
-	deleteGroup(groupId: string): Promise<{ success: true } | { success: false; error: string }>;
+	deleteReminder(
+		reminderId: string,
+	): Promise<{ success: true } | { success: false; error: string }>;
 }
 
 export const RemindersRepository: IRemindersRepository = {
@@ -67,10 +69,10 @@ export const RemindersRepository: IRemindersRepository = {
 			success: true,
 		};
 	},
-	async deleteGroup(userId) {
+	async deleteReminder(reminderId) {
 		const supabase = await supabaseServer();
 
-		const { error } = await supabase.from('groups').delete().eq('id', userId);
+		const { error } = await supabase.from('reminders').delete().eq('id', reminderId);
 
 		if (error) return { success: false, error: error.message };
 

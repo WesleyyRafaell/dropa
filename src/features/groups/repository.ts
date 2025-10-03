@@ -53,10 +53,10 @@ export const GroupsRepository: IGroupsRepository = {
 			data: data,
 		};
 	},
-	async editGroup(name, userId) {
+	async editGroup(name, groupId) {
 		const supabase = await supabaseServer();
 
-		const { error } = await supabase.from('groups').update({ name: name }).eq('id', userId);
+		const { error } = await supabase.from('groups').update({ name: name }).eq('id', groupId);
 
 		if (error) return { success: false, error: error.message };
 
@@ -64,10 +64,10 @@ export const GroupsRepository: IGroupsRepository = {
 			success: true,
 		};
 	},
-	async deleteGroup(userId) {
+	async deleteGroup(groupId) {
 		const supabase = await supabaseServer();
 
-		const { error } = await supabase.from('groups').delete().eq('id', userId);
+		const { error } = await supabase.from('groups').delete().eq('id', groupId);
 
 		if (error) return { success: false, error: error.message };
 

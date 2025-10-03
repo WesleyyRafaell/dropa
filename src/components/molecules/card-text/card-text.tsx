@@ -1,22 +1,61 @@
 import { Card } from '@/components/atoms';
 import React from 'react';
+import { BsTrash3Fill } from 'react-icons/bs';
 
 interface ICardTextProps {
-	title?: string;
+	deleteReminder: (id: string) => void;
 	text?: string;
+	reminderId: string;
+	loadingDeleteReminder: boolean;
 }
 
-const CardText = ({ text }: ICardTextProps) => {
+const CardText = ({ text, reminderId, loadingDeleteReminder, deleteReminder }: ICardTextProps) => {
 	return (
-		<Card>
-			<textarea
-				className="textarea h-24 bg-transparent
-				 border-white textarea-md  focus:shadow-none
-				 focus:outline-none focus:ring-0 text-white"
-				value={text}
-				placeholder="Bio"
-			></textarea>
-		</Card>
+		<div className="indicator group w-48">
+			<span
+				onClick={() => {
+					(document.getElementById(reminderId || '') as HTMLDialogElement)?.showModal();
+				}}
+				className="indicator-item badge  badge-primary cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+			>
+				<BsTrash3Fill />
+			</span>
+			<Card className="mt-3.5">
+				<textarea
+					className="textarea h-24 bg-transparent
+					border-white textarea-md  focus:shadow-none
+					focus:outline-none focus:ring-0 text-white"
+					value={text}
+					placeholder="Bio"
+				></textarea>
+			</Card>
+
+			<dialog id={reminderId} className="modal">
+				<div className="modal-box">
+					{loadingDeleteReminder ? (
+						<div className="h-40 flex justify-center items-center">
+							<span className="loading loading-ring loading-xl text-primary text-2xl"></span>
+						</div>
+					) : null}
+
+					{!loadingDeleteReminder ? (
+						<div className="h-40">
+							<h3 className="font-bold text-lg">Hello!</h3>
+							<p className="py-4">Deseja deletar este lembrete?</p>
+							<p className="font-light text-[14px]">Esta ação é irreversível</p>
+							<div className="modal-action">
+								<button className="btn btn-primary" onClick={() => deleteReminder(reminderId)}>
+									Deletar
+								</button>
+								<form method="dialog">
+									<button className="btn btn-outline btn-accent">Cancelar</button>
+								</form>
+							</div>
+						</div>
+					) : null}
+				</div>
+			</dialog>
+		</div>
 	);
 };
 

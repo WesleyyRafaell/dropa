@@ -38,7 +38,7 @@ const useDashboard = ({ groups }: IViewProps) => {
 		setGroupName(newNameGroup);
 		startTransitionEdit(async () => {
 			const result = await editGroupAction({
-				userId: idGroup,
+				groupId: idGroup,
 				name: newNameGroup,
 			});
 

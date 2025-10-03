@@ -9,7 +9,7 @@ interface INewCardProps {
 
 const NewCard = ({ createNewReminder, isPendingCreateNewReminder }: INewCardProps) => {
 	return (
-		<Card className="cursor-pointer" onClick={createNewReminder}>
+		<Card className="cursor-pointer mt-3.5" onClick={createNewReminder}>
 			{isPendingCreateNewReminder ? (
 				<div className="h-full flex justify-center items-center">
 					<span className="loading loading-ring loading-xl text-white text-2xl"></span>

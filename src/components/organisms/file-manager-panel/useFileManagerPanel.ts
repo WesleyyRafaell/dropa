@@ -1,4 +1,8 @@
-import { createReminderAction, getAllRemindersAction } from '@/features/reminders/action';
+import {
+	createReminderAction,
+	getAllRemindersAction,
+	deleteReminderAction,
+} from '@/features/reminders/action';
 import { IReminder } from '@/features/reminders/models';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 import { useEffect, useState, useTransition } from 'react';
@@ -9,6 +13,7 @@ const useFileManagerPanel = () => {
 	const [isPending, startTransition] = useTransition();
 	const [reminders, setReminders] = useState<IReminder[]>([]);
 	const [isPendingCreateNewReminder, startTransitionCreateNewReminder] = useTransition();
+	const [loadingDeleteReminder, setLoadingDeleteReminder] = useState(false);
 
 	useEffect(() => {
 		getAllRemindersById(groupId);
@@ -49,13 +54,36 @@ const useFileManagerPanel = () => {
 		});
 	};
 
+	const handleDeleteReminder = async (id: string) => {
+		setLoadingDeleteReminder(true);
+
+		const result = await deleteReminderAction(id);
+
+		if (result?.error) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+		}
+
+		if (result?.success) {
+			toast.success('Sucesso ao apagar lembrete.');
+			const remindersFilter = reminders?.filter((reminder) => reminder?.id !== id);
+
+			setReminders(remindersFilter);
+
+			setLoadingDeleteReminder(false);
+			return;
+		}
+		setLoadingDeleteReminder(false);
+	};
+
 	return {
 		isPending,
 		reminders,
 		groupName,
 		groupId,
-		createNewReminder,
 		isPendingCreateNewReminder,
+		loadingDeleteReminder,
+		createNewReminder,
+		handleDeleteReminder,
 	};
 };
 

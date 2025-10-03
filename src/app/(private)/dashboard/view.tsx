@@ -35,9 +35,15 @@ const View = ({ groups }: IViewProps) => {
 									onClick={handleCreteNewGroup}
 									className="w-16 h-16 flex-shrink-0 cursor-pointer bg-primary rounded-full flex justify-center items-center"
 								>
-									<VscNewFolder className="text-white text-2xl" />
+									{isPending ? (
+										<div>
+											<span className="loading loading-ring loading-xl text-white text-2xl"></span>
+										</div>
+									) : null}
+
+									{!isPending ? <VscNewFolder className="text-white text-2xl" /> : null}
 								</div>
-								{isPending ? <FolderLoading /> : null}
+
 								{groupList?.map((group) => (
 									<FolderContainer
 										id={group?.id}

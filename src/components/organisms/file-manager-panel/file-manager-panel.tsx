@@ -9,8 +9,10 @@ const FileManagerPanel = () => {
 		isPending,
 		groupName,
 		groupId,
-		createNewReminder,
 		isPendingCreateNewReminder,
+		loadingDeleteReminder,
+		createNewReminder,
+		handleDeleteReminder,
 	} = useFileManagerPanel();
 
 	return (
@@ -49,7 +51,13 @@ const FileManagerPanel = () => {
 										isPendingCreateNewReminder={isPendingCreateNewReminder}
 									/>
 									{reminders?.map((reminder) => (
-										<CardText key={reminder?.id} title={reminder?.title} text={reminder?.content} />
+										<CardText
+											key={reminder?.id}
+											reminderId={reminder.id}
+											text={reminder?.content}
+											deleteReminder={handleDeleteReminder}
+											loadingDeleteReminder={loadingDeleteReminder}
+										/>
 									))}
 								</div>
 							</div>
