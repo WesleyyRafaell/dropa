@@ -13,6 +13,7 @@ const FileManagerPanel = () => {
 		loadingDeleteReminder,
 		createNewReminder,
 		handleDeleteReminder,
+		handleEditNewReminder,
 	} = useFileManagerPanel();
 
 	return (
@@ -55,8 +56,9 @@ const FileManagerPanel = () => {
 											key={reminder?.id}
 											reminderId={reminder.id}
 											text={reminder?.content}
-											deleteReminder={handleDeleteReminder}
 											loadingDeleteReminder={loadingDeleteReminder}
+											deleteReminder={handleDeleteReminder}
+											editGroup={handleEditNewReminder}
 										/>
 									))}
 								</div>

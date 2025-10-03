@@ -32,3 +32,13 @@ export async function deleteReminderAction(reminderId: string) {
 
 	return { success: true };
 }
+
+export async function editGroupAction(content: string, reminderId: string) {
+	const result = await RemindersRepository.editGroup(content, reminderId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true };
+}

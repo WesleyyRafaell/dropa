@@ -2,11 +2,13 @@ import {
 	createReminderAction,
 	getAllRemindersAction,
 	deleteReminderAction,
+	editGroupAction,
 } from '@/features/reminders/action';
 import { IReminder } from '@/features/reminders/models';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'react-toastify';
+import { useDebouncedCallback } from 'use-debounce';
 
 const useFileManagerPanel = () => {
 	const { groupId, groupName } = FileManagerPanelStore();
@@ -54,6 +56,17 @@ const useFileManagerPanel = () => {
 		});
 	};
 
+	const handleEditNewReminder = useDebouncedCallback(
+		async (content: string, reminderId: string) => {
+			const result = await editGroupAction(content, reminderId);
+
+			if (result?.error) {
+				toast.error(result?.error || 'Foi mal, algum erro aconteceu na edição.');
+			}
+		},
+		800,
+	);
+
 	const handleDeleteReminder = async (id: string) => {
 		setLoadingDeleteReminder(true);
 
@@ -84,6 +97,7 @@ const useFileManagerPanel = () => {
 		loadingDeleteReminder,
 		createNewReminder,
 		handleDeleteReminder,
+		handleEditNewReminder,
 	};
 };
 

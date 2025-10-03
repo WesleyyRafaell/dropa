@@ -11,8 +11,8 @@ export interface IRemindersRepository {
 		groupId: string,
 	): Promise<{ success: true; data: IReminder } | { success: false; error: string }>;
 	editGroup(
-		name: string,
-		userId: string,
+		content: string,
+		reminderId: string,
 	): Promise<{ success: true } | { success: false; error: string }>;
 	deleteReminder(
 		reminderId: string,
@@ -58,10 +58,13 @@ export const RemindersRepository: IRemindersRepository = {
 			data: data,
 		};
 	},
-	async editGroup(name, userId) {
+	async editGroup(content, reminderId) {
 		const supabase = await supabaseServer();
 
-		const { error } = await supabase.from('groups').update({ name: name }).eq('id', userId);
+		const { error } = await supabase
+			.from('reminders')
+			.update({ content: content })
+			.eq('id', reminderId);
 
 		if (error) return { success: false, error: error.message };
 

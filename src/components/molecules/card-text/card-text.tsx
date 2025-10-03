@@ -1,15 +1,33 @@
+'use client';
+
 import { Card } from '@/components/atoms';
-import React from 'react';
+import React, { useState } from 'react';
 import { BsTrash3Fill } from 'react-icons/bs';
 
 interface ICardTextProps {
-	deleteReminder: (id: string) => void;
 	text?: string;
 	reminderId: string;
 	loadingDeleteReminder: boolean;
+	deleteReminder: (id: string) => void;
+	editGroup: (content: string, reminderId: string) => void;
 }
 
-const CardText = ({ text, reminderId, loadingDeleteReminder, deleteReminder }: ICardTextProps) => {
+const CardText = ({
+	text,
+	reminderId,
+	loadingDeleteReminder,
+	deleteReminder,
+	editGroup,
+}: ICardTextProps) => {
+	const [inputValue, setInputValue] = useState(text);
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const value = e.target.value;
+
+		setInputValue(value);
+		editGroup?.(value, reminderId ?? '');
+	};
+
 	return (
 		<div className="indicator group w-48">
 			<span
@@ -25,8 +43,8 @@ const CardText = ({ text, reminderId, loadingDeleteReminder, deleteReminder }: I
 					className="textarea h-24 bg-transparent
 					border-white textarea-md  focus:shadow-none
 					focus:outline-none focus:ring-0 text-white"
-					value={text}
-					placeholder="Bio"
+					value={inputValue}
+					onChange={handleInputChange}
 				></textarea>
 			</Card>
 

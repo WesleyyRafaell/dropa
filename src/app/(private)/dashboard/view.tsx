@@ -1,6 +1,6 @@
 'use client';
 
-import { FolderContainer, FolderLoading, Logo } from '@/components/atoms';
+import { FolderContainer, Logo } from '@/components/atoms';
 import { VscNewFolder } from 'react-icons/vsc';
 import { IGroup } from '@/features/groups/models';
 import useDashboard from './useDashboard';
