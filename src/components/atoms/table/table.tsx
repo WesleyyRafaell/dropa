@@ -1,25 +1,45 @@
 'use client';
 
 import React from 'react';
-import { FaFilePdf, FaFileWord } from 'react-icons/fa6';
+import { LuFileHeart } from 'react-icons/lu';
 import { IoIosMore } from 'react-icons/io';
 import useUploadTable from './useUploadTable';
+import { formatIsoToDate } from '@/utils/formatDate';
 
 interface ITableProps {
 	groupId: string;
 }
 
 const Table = ({ groupId }: ITableProps) => {
-	const { handleUploadFiles } = useUploadTable();
+	const { handleUploadFiles, uploadingItens, fileInputRef, filesByGroup } = useUploadTable();
+
 	return (
 		<div>
-			<div className="flex justify-center mb-3">
+			<div className="flex flex-col justify-center items-center gap-3 mb-6">
 				<input
+					ref={fileInputRef}
 					type="file"
 					className="file-input file-input-primary"
 					onChange={(e) => handleUploadFiles(groupId, e.target.files)}
 					multiple
 				/>
+				{uploadingItens?.length ? (
+					<ul className="list bg-base-100 rounded-box shadow-md">
+						<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+							Subindo seus arquivos, aguarde um pouco
+						</li>
+						{uploadingItens?.map((item) => (
+							<li className="list-row" key={item}>
+								<div>
+									<span className="loading loading-ring loading-sm text-primary text-2xl"></span>
+								</div>
+								<div>
+									<div>{item}</div>
+								</div>
+							</li>
+						))}
+					</ul>
+				) : null}
 			</div>
 			<div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 				<table className="table">
@@ -29,47 +49,28 @@ const Table = ({ groupId }: ITableProps) => {
 							<th></th>
 							<th>Arquivo</th>
 							<th>Ultima modificação</th>
-							<th>Tamanho do arquivo</th>
 							<th>Ações</th>
 						</tr>
 					</thead>
 					<tbody>
-						{/* row 1 */}
-						<tr>
-							<th>1</th>
-							<td>
-								<div className="flex items-center gap-2">
-									<FaFilePdf size={20} className="text-primary" />
-									Cy Ganderton
-								</div>
-							</td>
-							<td>Quality Control Specialist</td>
-							<td>Blue</td>
-							<td>
-								<div className="flex justify-center">
-									<IoIosMore size={25} />
-								</div>
-							</td>
-						</tr>
-						{/* row 2 */}
-						<tr>
-							<th>2</th>
-							<td>
-								<div className="flex items-center gap-2">
-									<FaFileWord size={20} className="text-primary" />
-									Cy Ganderton
-								</div>
-							</td>
-							<td>Desktop Support Technician</td>
-							<td>Purple</td>
-						</tr>
-						{/* row 3 */}
-						<tr>
-							<th>3</th>
-							<td>Brice Swyre</td>
-							<td>Tax Accountant</td>
-							<td>Red</td>
-						</tr>
+						{filesByGroup?.map((file, index) => (
+							<tr key={file?.id}>
+								<th>{index + 1}</th>
+								<td>
+									<div className="flex items-center gap-2">
+										<LuFileHeart size={20} className="text-primary" />
+										{file?.name}
+									</div>
+								</td>
+								<td>{formatIsoToDate(file?.created_at)}</td>
+
+								<td>
+									<div className="flex justify-center">
+										<IoIosMore size={25} />
+									</div>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				</table>
 			</div>

@@ -1,5 +1,5 @@
 import { supabaseServer } from '@/lib/server';
-import { IGroup, UploadReminderFilesParams } from './models';
+import { getAllFilesResponse, IGroup, UploadReminderFilesParams } from './models';
 import { randomUUID } from 'crypto';
 
 export interface IGroupsRepository {
@@ -15,6 +15,9 @@ export interface IGroupsRepository {
 		userId: string,
 	): Promise<{ success: true } | { success: false; error: string }>;
 	deleteGroup(groupId: string): Promise<{ success: true } | { success: false; error: string }>;
+	getFilesByGroup(
+		groupId: string,
+	): Promise<{ success: true; data: getAllFilesResponse[] } | { success: false; error: string }>;
 	uploadGroupFiles({
 		userId,
 		groupId,
@@ -84,8 +87,6 @@ export const GroupsRepository: IGroupsRepository = {
 	async uploadGroupFiles({ userId, formData, groupId }: UploadReminderFilesParams) {
 		const files = formData.getAll('files') as File[];
 
-		console.log(`files`, files);
-
 		if (files.length === 0) throw new Error('Nenhum arquivo enviado.');
 
 		const supabase = await supabaseServer();
@@ -125,6 +126,35 @@ export const GroupsRepository: IGroupsRepository = {
 
 		return {
 			success: true,
+		};
+	},
+	async getFilesByGroup(groupId: string) {
+		const supabase = await supabaseServer();
+
+		const { data: files, error } = await supabase
+			.from('dropa_files')
+			.select('*')
+			.eq('group_id', groupId);
+
+		if (error) return { success: false, error: error.message };
+
+		const filesWithUrls = await Promise.all(
+			files.map(async (file) => {
+				const { data: signedUrlData } = await supabase.storage
+					.from('dropa_bucket')
+					.createSignedUrl(file.path, 3600);
+
+				return {
+					...file,
+					fileName: file.path.split('/').pop(),
+					downloadUrl: signedUrlData?.signedUrl,
+				};
+			}),
+		);
+
+		return {
+			success: true,
+			data: filesWithUrls,
 		};
 	},
 };

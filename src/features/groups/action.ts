@@ -57,3 +57,13 @@ export async function uploadGroupFilesAction({
 
 	return { success: true };
 }
+
+export async function getFilesByGroupAction(groupId: string) {
+	const result = await GroupsRepository.getFilesByGroup(groupId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true, data: result?.data };
+}
