@@ -2,6 +2,7 @@
 
 import { IGroupProps, IDeleteGroupProps, IEditGroupProps } from '@/types/features';
 import { GroupsRepository } from './repository';
+import { UploadReminderFilesParams } from './models';
 
 export async function getAllGroupsAction() {
 	const result = await GroupsRepository.getAllGroups();
@@ -35,6 +36,20 @@ export async function editGroupAction({ name, groupId }: IEditGroupProps) {
 
 export async function deleteGroupAction({ groupId }: IDeleteGroupProps) {
 	const result = await GroupsRepository.deleteGroup(groupId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true };
+}
+
+export async function uploadGroupFilesAction({
+	userId,
+	groupId,
+	formData,
+}: UploadReminderFilesParams) {
+	const result = await GroupsRepository.uploadGroupFiles({ userId, groupId, formData });
 
 	if (!result.success) {
 		return { success: false, error: result.error };

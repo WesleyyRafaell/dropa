@@ -1,5 +1,6 @@
 import { supabaseServer } from '@/lib/server';
-import { IGroup } from './models';
+import { IGroup, UploadReminderFilesParams } from './models';
+import { randomUUID } from 'crypto';
 
 export interface IGroupsRepository {
 	getAllGroups(): Promise<
@@ -14,6 +15,11 @@ export interface IGroupsRepository {
 		userId: string,
 	): Promise<{ success: true } | { success: false; error: string }>;
 	deleteGroup(groupId: string): Promise<{ success: true } | { success: false; error: string }>;
+	uploadGroupFiles({
+		userId,
+		groupId,
+		formData,
+	}: UploadReminderFilesParams): Promise<{ success: true } | { success: false; error: string }>;
 }
 
 export const GroupsRepository: IGroupsRepository = {
@@ -68,6 +74,52 @@ export const GroupsRepository: IGroupsRepository = {
 		const supabase = await supabaseServer();
 
 		const { error } = await supabase.from('groups').delete().eq('id', groupId);
+
+		if (error) return { success: false, error: error.message };
+
+		return {
+			success: true,
+		};
+	},
+	async uploadGroupFiles({ userId, formData, groupId }: UploadReminderFilesParams) {
+		const files = formData.getAll('files') as File[];
+
+		console.log(`files`, files);
+
+		if (files.length === 0) throw new Error('Nenhum arquivo enviado.');
+
+		const supabase = await supabaseServer();
+
+		const uploaded: { name: string; url: string; path: string }[] = [];
+
+		for (const file of files) {
+			const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+			const path = `user_${userId}/group_${groupId}/${randomUUID()}-${file.name}`;
+
+			const { error } = await supabase.storage.from('dropa_bucket').upload(path, fileBuffer, {
+				contentType: file.type,
+			});
+
+			if (error) throw error;
+
+			const { data } = supabase.storage.from('dropa_bucket').getPublicUrl(path);
+
+			uploaded.push({
+				name: file.name,
+				url: data.publicUrl,
+				path,
+			});
+		}
+
+		const { error } = await supabase.from('dropa_files').insert(
+			uploaded.map((file) => ({
+				group_id: groupId,
+				name: file.name,
+				path: file.path,
+				url: file.url,
+			})),
+		);
 
 		if (error) return { success: false, error: error.message };
 

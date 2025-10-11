@@ -5,3 +5,9 @@ export interface IGroup {
 	description: string | null;
 	created_at: string;
 }
+
+export interface UploadReminderFilesParams {
+	userId: string;
+	groupId: string;
+	formData: FormData;
+}
