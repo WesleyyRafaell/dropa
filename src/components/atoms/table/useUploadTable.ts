@@ -43,11 +43,12 @@ const useUploadTable = () => {
 
 		const result = await uploadGroupFilesAction({ userId: user?.id || '', groupId, formData });
 
-		if (result?.error) {
+		if (result?.error || !result?.data) {
 			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
 			return;
 		}
 
+		setFilesByGroup((prevState) => [...result?.data, ...prevState]);
 		toast.success('Sucesso no upload S2');
 		setUploadingItens([]);
 		if (fileInputRef.current) {

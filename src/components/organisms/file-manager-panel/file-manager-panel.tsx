@@ -33,18 +33,18 @@ const FileManagerPanel = () => {
 					) : null}
 					{!isPending ? (
 						<div className="tabs tabs-lift mt-4">
-							<input type="radio" name="my_tabs_3" className="tab" aria-label="Arquivos" />
-							<div className="tab-content bg-base-100 border-base-300 p-6">
-								<Table groupId={groupId} />
-							</div>
-
 							<input
 								type="radio"
 								name="my_tabs_3"
 								className="tab"
-								aria-label="Lembrentes"
+								aria-label="Arquivos"
 								defaultChecked
 							/>
+							<div className="tab-content bg-base-100 border-base-300 p-6">
+								<Table groupId={groupId} />
+							</div>
+
+							<input type="radio" name="my_tabs_3" className="tab" aria-label="Lembrentes" />
 							<div className="tab-content bg-base-100 border-base-300 p-6">
 								<div className="grid grid-cols-4 gap-4">
 									<NewCard

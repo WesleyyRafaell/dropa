@@ -55,7 +55,7 @@ export async function uploadGroupFilesAction({
 		return { success: false, error: result.error };
 	}
 
-	return { success: true };
+	return { success: true, data: result?.data };
 }
 
 export async function getFilesByGroupAction(groupId: string) {
