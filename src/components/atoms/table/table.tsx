@@ -2,9 +2,11 @@
 
 import React from 'react';
 import { LuFileHeart } from 'react-icons/lu';
-import { IoIosMore } from 'react-icons/io';
 import useUploadTable from './useUploadTable';
 import { formatIsoToDate } from '@/utils/formatDate';
+import { RiFileDownloadLine } from 'react-icons/ri';
+import { RiDeleteBin5Fill } from 'react-icons/ri';
+import Link from 'next/link';
 
 interface ITableProps {
 	groupId: string;
@@ -49,7 +51,8 @@ const Table = ({ groupId }: ITableProps) => {
 							<th></th>
 							<th>Arquivo</th>
 							<th>Ultima modificação</th>
-							<th>Ações</th>
+							<th>Download</th>
+							<th>Excluir</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -65,8 +68,15 @@ const Table = ({ groupId }: ITableProps) => {
 								<td>{formatIsoToDate(file?.created_at)}</td>
 
 								<td>
-									<div className="flex justify-center">
-										<IoIosMore size={25} />
+									<div className="flex justify-center cursor-pointer">
+										<Link href={file?.downloadUrl || ''} target="_blank">
+											<RiFileDownloadLine size={25} className="text-primary" />
+										</Link>
+									</div>
+								</td>
+								<td>
+									<div className="flex justify-center cursor-pointer">
+										<RiDeleteBin5Fill size={25} className="text-primary" />
 									</div>
 								</td>
 							</tr>

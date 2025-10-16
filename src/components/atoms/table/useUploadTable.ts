@@ -1,10 +1,12 @@
-import { getFilesByGroupAction, uploadGroupFilesAction } from '@/features/groups/action';
-import { getAllFilesResponse } from '@/features/groups/models';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 
 import { useUserStore } from '@/store/user-store';
+
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { uploadGroupFilesAction } from '@/features/files/action-client';
+import { getFilesByGroupAction } from '@/features/files/action-server';
+import { getAllFilesResponse } from '@/features/files/models';
 
 const useUploadTable = () => {
 	const { groupId } = FileManagerPanelStore();
