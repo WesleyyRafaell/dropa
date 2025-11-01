@@ -12,31 +12,31 @@ import { useDebouncedCallback } from 'use-debounce';
 
 const useFileManagerPanel = () => {
 	const { groupId, groupName } = FileManagerPanelStore();
-	const [isPending, startTransition] = useTransition();
+
+	const [loadingReminders, setLoadingReminders] = useState(false);
 	const [reminders, setReminders] = useState<IReminder[]>([]);
 	const [isPendingCreateNewReminder, startTransitionCreateNewReminder] = useTransition();
 	const [loadingDeleteReminder, setLoadingDeleteReminder] = useState(false);
 
 	useEffect(() => {
 		getAllRemindersById(groupId);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [groupId]);
 
-	const getAllRemindersById = (groupId: string) => {
+	const getAllRemindersById = async (groupId: string) => {
 		if (!groupId) return;
-		if (isPending) return;
+		setLoadingReminders(true);
 
-		startTransition(async () => {
-			const result = await getAllRemindersAction(groupId);
+		const result = await getAllRemindersAction(groupId);
 
-			if (result?.error) {
-				toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
-			}
+		setLoadingReminders(false);
 
-			if (result?.success && result?.reminders) {
-				setReminders(result?.reminders?.data || []);
-			}
-		});
+		if (result?.error) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+		}
+
+		if (result?.success && result?.reminders) {
+			setReminders(result?.reminders?.data || []);
+		}
 	};
 
 	const createNewReminder = () => {
@@ -89,7 +89,7 @@ const useFileManagerPanel = () => {
 	};
 
 	return {
-		isPending,
+		loadingReminders,
 		reminders,
 		groupName,
 		groupId,

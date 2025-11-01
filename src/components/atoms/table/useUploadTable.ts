@@ -13,6 +13,7 @@ const useUploadTable = () => {
 	const [uploadingItens, setUploadingItens] = useState<string[]>([]);
 	const [filesByGroup, setFilesByGroup] = useState<getAllFilesResponse[]>([]);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [filesLoading, setFilesLoading] = useState(false);
 	const { user } = useUserStore();
 
 	useEffect(() => {
@@ -20,7 +21,11 @@ const useUploadTable = () => {
 	}, [groupId]);
 
 	const getAllFilesByGroup = async (groupId: string) => {
+		setFilesLoading(true);
 		const result = await getFilesByGroupAction(groupId);
+		setFilesLoading(false);
+
+		console.log(`result`, result);
 
 		if (result?.error || !result?.data) {
 			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
@@ -47,11 +52,12 @@ const useUploadTable = () => {
 
 		if (result?.error || !result?.data) {
 			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			setUploadingItens([]);
 			return;
 		}
 
 		setFilesByGroup((prevState) => [...result?.data, ...prevState]);
-		toast.success('Sucesso no upload S2');
+		toast.success('Sucesso no upload ❤️');
 		setUploadingItens([]);
 		if (fileInputRef.current) {
 			fileInputRef.current.value = '';
@@ -59,6 +65,7 @@ const useUploadTable = () => {
 	};
 
 	return {
+		filesLoading,
 		uploadingItens,
 		fileInputRef,
 		filesByGroup,

@@ -3,6 +3,7 @@ import { supabaseClient } from '@/lib/client';
 import { v4 as uuidv4 } from 'uuid';
 import Uppy from '@uppy/core';
 import Tus from '@uppy/tus';
+import { MAX_FILE_SIZE, sanitizeFileName } from '@/utils/files';
 
 export interface IFilesRepository {
 	uploadGroupFiles({
@@ -19,6 +20,16 @@ export const FilesRepositoryClient: IFilesRepository = {
 		const files = formData.getAll('files') as File[];
 
 		if (files.length === 0) throw new Error('Nenhum arquivo enviado.');
+
+		const tooLargeFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+
+		if (tooLargeFiles.length > 0) {
+			const fileNames = tooLargeFiles.map((f) => f.name).join(', ');
+
+			const message = `Os seguintes arquivos excedem 50 MB: ${fileNames}`;
+
+			return { success: false, error: message };
+		}
 
 		const supabase = supabaseClient();
 
@@ -49,10 +60,10 @@ export const FilesRepositoryClient: IFilesRepository = {
 		});
 
 		for (const file of files) {
-			const path = `user_${userId}/group_${groupId}/${uuidv4()}-${file.name}`;
+			const path = `user_${userId}/group_${groupId}/${uuidv4()}-${sanitizeFileName(file.name)}`;
 
 			uppy.addFile({
-				name: file.name,
+				name: sanitizeFileName(file.name),
 				type: file.type,
 				data: file,
 				meta: {
@@ -71,7 +82,7 @@ export const FilesRepositoryClient: IFilesRepository = {
 			const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dropa_bucket/${path}`;
 
 			uploaded.push({
-				name: file.name,
+				name: sanitizeFileName(file.name),
 				url: publicUrl,
 				group_id: groupId,
 				path,

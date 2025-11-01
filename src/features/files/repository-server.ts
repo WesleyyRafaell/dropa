@@ -19,23 +19,27 @@ export const FilesRepositoryServer: IFilesRepository = {
 
 		if (error) return { success: false, error: error.message };
 
-		const filesWithUrls = await Promise.all(
-			files.map(async (file) => {
-				const { data: signedUrlData } = await supabase.storage
-					.from('dropa_bucket')
-					.createSignedUrl(file.path, 3600);
+		// const filesWithUrls = await Promise.all(
+		// 	files.map(async (file) => {
+		// 		const { data: signedUrlData, error } = await supabase.storage
+		// 			.from('dropa_bucket')
+		// 			.createSignedUrl(file.path, 3600);
 
-				return {
-					...file,
-					fileName: file.path.split('/').pop(),
-					downloadUrl: signedUrlData?.signedUrl,
-				};
-			}),
-		);
+		// 		if (error) {
+		// 			console.log(`error`, file.path, error);
+		// 		}
+
+		// 		return {
+		// 			...file,
+		// 			fileName: file.path.split('/').pop(),
+		// 			downloadUrl: signedUrlData?.signedUrl,
+		// 		};
+		// 	}),
+		// );
 
 		return {
 			success: true,
-			data: filesWithUrls,
+			data: files,
 		};
 	},
 };
