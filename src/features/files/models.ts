@@ -12,5 +12,4 @@ export interface getAllFilesResponse {
 	url: string;
 	created_at: string;
 	fileName: string;
-	downloadUrl: string;
 }

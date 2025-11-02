@@ -6,15 +6,20 @@ import useUploadTable from './useUploadTable';
 import { formatIsoToDate } from '@/utils/formatDate';
 import { RiFileDownloadLine } from 'react-icons/ri';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
-import Link from 'next/link';
 
 interface ITableProps {
 	groupId: string;
 }
 
 const Table = ({ groupId }: ITableProps) => {
-	const { handleUploadFiles, uploadingItens, fileInputRef, filesByGroup, filesLoading } =
-		useUploadTable();
+	const {
+		handleUploadFiles,
+		downloadFile,
+		uploadingItens,
+		fileInputRef,
+		filesByGroup,
+		filesLoading,
+	} = useUploadTable();
 
 	return (
 		<div>
@@ -77,9 +82,13 @@ const Table = ({ groupId }: ITableProps) => {
 
 										<td>
 											<div className="flex justify-center cursor-pointer">
-												<Link href={file?.downloadUrl || ''} target="_blank">
+												<a
+													onClick={() => downloadFile(file?.path)}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
 													<RiFileDownloadLine size={25} className="text-primary" />
-												</Link>
+												</a>
 											</div>
 										</td>
 										<td>

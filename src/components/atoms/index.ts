@@ -4,3 +4,4 @@ export { default as FolderContainer } from './folder-container/folder-container'
 export { default as FolderLoading } from './folder-loading/folder-loading';
 export { default as Card } from './card/card';
 export { default as Table } from './table/table';
+export { default as CustomProgressBar } from './custom-toast/custom-toast';

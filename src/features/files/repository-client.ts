@@ -43,27 +43,26 @@ export const FilesRepositoryClient: IFilesRepository = {
 
 		const uploaded: { name: string; group_id: string; url: string; path: string }[] = [];
 
-		const uppy = new Uppy({
-			autoProceed: false,
-
-			restrictions: { maxNumberOfFiles: files.length },
-		}).use(Tus, {
-			endpoint: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/upload/resumable`,
-
-			headers: {
-				authorization: `Bearer ${session.access_token}`,
-
-				'x-upsert': 'true',
-			},
-
-			uploadDataDuringCreation: true,
-		});
-
 		for (const file of files) {
-			const path = `user_${userId}/group_${groupId}/${uuidv4()}-${sanitizeFileName(file.name)}`;
+			const sanitizedName = sanitizeFileName(file.name);
+			const path = `user_${userId}/group_${groupId}/${uuidv4()}-${sanitizedName}`;
+
+			const uppy = new Uppy({
+				autoProceed: false,
+
+				restrictions: { maxNumberOfFiles: 1 },
+			}).use(Tus, {
+				endpoint: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/upload/resumable`,
+
+				headers: {
+					authorization: `Bearer ${session.access_token}`,
+				},
+
+				uploadDataDuringCreation: true,
+			});
 
 			uppy.addFile({
-				name: sanitizeFileName(file.name),
+				name: `${uuidv4()}-${sanitizedName}`,
 				type: file.type,
 				data: file,
 				meta: {
@@ -73,20 +72,28 @@ export const FilesRepositoryClient: IFilesRepository = {
 				},
 			});
 
-			await new Promise<void>((resolve, reject) => {
-				uppy.once('upload-success', () => resolve());
-				uppy.once('error', (err) => reject(err));
-				uppy.upload().catch(reject);
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					uppy.once('upload-success', () => resolve());
+					uppy.once('error', (err) => reject(err));
+					uppy.upload().catch(reject);
+				});
 
-			const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dropa_bucket/${path}`;
+				const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/dropa_bucket/${path}`;
 
-			uploaded.push({
-				name: sanitizeFileName(file.name),
-				url: publicUrl,
-				group_id: groupId,
-				path,
-			});
+				uploaded.push({
+					name: sanitizeFileName(file.name),
+					url: publicUrl,
+					group_id: groupId,
+					path,
+				});
+			} catch (error) {
+				console.error(`Erro ao fazer upload de ${sanitizedName}:`, error);
+			}
+		}
+
+		if (uploaded.length === 0) {
+			return { success: false, error: 'Nenhum arquivo foi enviado com sucesso.' };
 		}
 
 		const { data: filesFromSupabase, error } = await supabase
@@ -103,23 +110,9 @@ export const FilesRepositoryClient: IFilesRepository = {
 
 		if (error) return { success: false, error: error.message };
 
-		const filesWithUrls = await Promise.all(
-			filesFromSupabase?.map(async (file) => {
-				const { data: signedUrlData } = await supabase.storage
-					.from('dropa_bucket')
-					.createSignedUrl(file.path, 3600);
-
-				return {
-					...file,
-					fileName: file.path.split('/').pop(),
-					downloadUrl: signedUrlData?.signedUrl,
-				};
-			}),
-		);
-
 		return {
 			success: true,
-			data: filesWithUrls,
+			data: filesFromSupabase,
 		};
 	},
 };

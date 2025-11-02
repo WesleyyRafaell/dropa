@@ -5,6 +5,9 @@ export interface IFilesRepository {
 	getFilesByGroup(
 		groupId: string,
 	): Promise<{ success: true; data: getAllFilesResponse[] } | { success: false; error: string }>;
+	getFileDownloadUrl(
+		path: string,
+	): Promise<{ success: true; data: string } | { success: false; error: string }>;
 }
 
 export const FilesRepositoryServer: IFilesRepository = {
@@ -19,27 +22,23 @@ export const FilesRepositoryServer: IFilesRepository = {
 
 		if (error) return { success: false, error: error.message };
 
-		// const filesWithUrls = await Promise.all(
-		// 	files.map(async (file) => {
-		// 		const { data: signedUrlData, error } = await supabase.storage
-		// 			.from('dropa_bucket')
-		// 			.createSignedUrl(file.path, 3600);
-
-		// 		if (error) {
-		// 			console.log(`error`, file.path, error);
-		// 		}
-
-		// 		return {
-		// 			...file,
-		// 			fileName: file.path.split('/').pop(),
-		// 			downloadUrl: signedUrlData?.signedUrl,
-		// 		};
-		// 	}),
-		// );
-
 		return {
 			success: true,
 			data: files,
+		};
+	},
+	async getFileDownloadUrl(path: string) {
+		const supabase = await supabaseServer();
+
+		const { data: signedUrlData, error } = await supabase.storage
+			.from('dropa_bucket')
+			.createSignedUrl(path, 3600);
+
+		if (error) return { success: false, error: error.message };
+
+		return {
+			success: true,
+			data: signedUrlData?.signedUrl,
 		};
 	},
 };

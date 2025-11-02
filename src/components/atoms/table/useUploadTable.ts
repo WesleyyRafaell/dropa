@@ -5,8 +5,9 @@ import { useUserStore } from '@/store/user-store';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { uploadGroupFilesAction } from '@/features/files/action-client';
-import { getFilesByGroupAction } from '@/features/files/action-server';
+import { getFileDownloadUrlAction, getFilesByGroupAction } from '@/features/files/action-server';
 import { getAllFilesResponse } from '@/features/files/models';
+import CustomProgressBar from '../custom-toast/custom-toast';
 
 const useUploadTable = () => {
 	const { groupId } = FileManagerPanelStore();
@@ -24,8 +25,6 @@ const useUploadTable = () => {
 		setFilesLoading(true);
 		const result = await getFilesByGroupAction(groupId);
 		setFilesLoading(false);
-
-		console.log(`result`, result);
 
 		if (result?.error || !result?.data) {
 			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
@@ -64,12 +63,44 @@ const useUploadTable = () => {
 		}
 	};
 
+	const downloadFile = async (path: string) => {
+		const id = toast(CustomProgressBar, {
+			progress: 0,
+			customProgressBar: true,
+			closeButton: false,
+			data: {
+				message: 'Seu download começará em breve.',
+			},
+		});
+
+		toast.update(id, {
+			progress: 0.5,
+		});
+
+		const result = await getFileDownloadUrlAction(path);
+
+		toast.done(id);
+
+		if (result?.error || !result?.data) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			return;
+		}
+
+		const link = document.createElement('a');
+		link.href = result?.data;
+		link.target = '_blank';
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
 	return {
-		filesLoading,
 		uploadingItens,
 		fileInputRef,
 		filesByGroup,
+		filesLoading,
 		handleUploadFiles,
+		downloadFile,
 	};
 };
 
