@@ -21,3 +21,13 @@ export async function getFileDownloadUrlAction(path: string) {
 
 	return { success: true, data: result?.data };
 }
+
+export async function deleteFileAction(id: string, path: string) {
+	const result = await FilesRepositoryServer.deleteFile(id, path);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true };
+}

@@ -15,7 +15,9 @@ const Table = ({ groupId }: ITableProps) => {
 	const {
 		handleUploadFiles,
 		downloadFile,
+		deleteFile,
 		uploadingItens,
+		deleteFilesLoading,
 		fileInputRef,
 		filesByGroup,
 		filesLoading,
@@ -93,7 +95,45 @@ const Table = ({ groupId }: ITableProps) => {
 										</td>
 										<td>
 											<div className="flex justify-center cursor-pointer">
-												<RiDeleteBin5Fill size={25} className="text-primary" />
+												<RiDeleteBin5Fill
+													onClick={() => {
+														(
+															document.getElementById(file.id || '') as HTMLDialogElement
+														)?.showModal();
+													}}
+													size={25}
+													className="text-primary"
+												/>
+												<dialog id={file.id} className="modal">
+													<div className="modal-box">
+														{deleteFilesLoading ? (
+															<div className="h-40 flex justify-center items-center">
+																<span className="loading loading-ring loading-xl text-primary text-2xl"></span>
+															</div>
+														) : null}
+
+														{!deleteFilesLoading ? (
+															<div className="h-40">
+																<h3 className="font-bold text-lg">Hello!</h3>
+																<p className="py-4">
+																	Deseja deletar o arquivo <strong>{file.name}</strong>?
+																</p>
+																<p className="font-light text-[14px]">Esta ação é irreversível</p>
+																<div className="modal-action">
+																	<button
+																		className="btn btn-primary"
+																		onClick={() => deleteFile(file.id, file.path)}
+																	>
+																		Deletar
+																	</button>
+																	<form method="dialog">
+																		<button className="btn btn-outline btn-accent">Cancelar</button>
+																	</form>
+																</div>
+															</div>
+														) : null}
+													</div>
+												</dialog>
 											</div>
 										</td>
 									</tr>

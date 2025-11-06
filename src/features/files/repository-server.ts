@@ -8,6 +8,10 @@ export interface IFilesRepository {
 	getFileDownloadUrl(
 		path: string,
 	): Promise<{ success: true; data: string } | { success: false; error: string }>;
+	deleteFile(
+		fileId: string,
+		path: string,
+	): Promise<{ success: true } | { success: false; error: string }>;
 }
 
 export const FilesRepositoryServer: IFilesRepository = {
@@ -40,5 +44,17 @@ export const FilesRepositoryServer: IFilesRepository = {
 			success: true,
 			data: signedUrlData?.signedUrl,
 		};
+	},
+	async deleteFile(fileId: string, path: string) {
+		const supabase = await supabaseServer();
+
+		const deleteTable = supabase.from('dropa_files').delete().eq('id', fileId);
+		const deleteFile = supabase.storage.from('dropa_bucket').remove([path]);
+
+		const result = await Promise.all([deleteTable, deleteFile]);
+
+		if (result[0].error || result[1].error) return { success: false, error: 'Erro na requisição' };
+
+		return { success: true };
 	},
 };

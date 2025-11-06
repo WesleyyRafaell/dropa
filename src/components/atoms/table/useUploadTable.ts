@@ -5,7 +5,11 @@ import { useUserStore } from '@/store/user-store';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { uploadGroupFilesAction } from '@/features/files/action-client';
-import { getFileDownloadUrlAction, getFilesByGroupAction } from '@/features/files/action-server';
+import {
+	deleteFileAction,
+	getFileDownloadUrlAction,
+	getFilesByGroupAction,
+} from '@/features/files/action-server';
 import { getAllFilesResponse } from '@/features/files/models';
 import CustomProgressBar from '../custom-toast/custom-toast';
 
@@ -15,6 +19,7 @@ const useUploadTable = () => {
 	const [filesByGroup, setFilesByGroup] = useState<getAllFilesResponse[]>([]);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [filesLoading, setFilesLoading] = useState(false);
+	const [deleteFilesLoading, setDeleteFilesLoading] = useState(false);
 	const { user } = useUserStore();
 
 	useEffect(() => {
@@ -94,13 +99,30 @@ const useUploadTable = () => {
 		document.body.removeChild(link);
 	};
 
+	const deleteFile = async (id: string, path: string) => {
+		setDeleteFilesLoading(true);
+		const result = await deleteFileAction(id, path);
+
+		if (result?.error) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			setDeleteFilesLoading(false);
+			return;
+		}
+
+		toast.success('Sucesso na remoção do arquivo');
+		setDeleteFilesLoading(false);
+		getAllFilesByGroup(groupId);
+	};
+
 	return {
 		uploadingItens,
 		fileInputRef,
 		filesByGroup,
 		filesLoading,
+		deleteFilesLoading,
 		handleUploadFiles,
 		downloadFile,
+		deleteFile,
 	};
 };
 
