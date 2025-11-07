@@ -6,6 +6,8 @@ import useUploadTable from './useUploadTable';
 import { formatIsoToDate } from '@/utils/formatDate';
 import { RiFileDownloadLine } from 'react-icons/ri';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { formatFileSize } from '@/utils/files';
+import { FaRegCopy } from 'react-icons/fa';
 
 interface ITableProps {
 	groupId: string;
@@ -16,6 +18,7 @@ const Table = ({ groupId }: ITableProps) => {
 		handleUploadFiles,
 		downloadFile,
 		deleteFile,
+		getCopyFile,
 		uploadingItens,
 		deleteFilesLoading,
 		fileInputRef,
@@ -65,7 +68,9 @@ const Table = ({ groupId }: ITableProps) => {
 								<tr>
 									<th></th>
 									<th>Arquivo</th>
+									<th>Tamanho</th>
 									<th>Ultima modificação</th>
+									<th>Copiar url</th>
 									<th>Download</th>
 									<th>Excluir</th>
 								</tr>
@@ -76,11 +81,26 @@ const Table = ({ groupId }: ITableProps) => {
 										<th>{index + 1}</th>
 										<td>
 											<div className="flex items-center gap-2">
-												<LuFileHeart size={20} className="text-primary" />
-												{file?.name}
+												<div className="w-5 h-5">
+													<LuFileHeart size={20} className="text-primary" />
+												</div>
+												<div className="tooltip max-w-40" data-tip={file?.name}>
+													<p className="line-clamp-2">{file?.name}</p>
+												</div>
 											</div>
 										</td>
+										<td>{formatFileSize(file?.size)}</td>
 										<td>{formatIsoToDate(file?.created_at)}</td>
+
+										<td>
+											<div className="flex justify-center cursor-pointer">
+												<FaRegCopy
+													onClick={() => getCopyFile(file?.path)}
+													size={20}
+													className="text-primary"
+												/>
+											</div>
+										</td>
 
 										<td>
 											<div className="flex justify-center cursor-pointer">

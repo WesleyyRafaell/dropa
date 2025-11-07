@@ -12,6 +12,7 @@ import {
 } from '@/features/files/action-server';
 import { getAllFilesResponse } from '@/features/files/models';
 import CustomProgressBar from '../custom-toast/custom-toast';
+import { copyText } from '@/utils/text';
 
 const useUploadTable = () => {
 	const { groupId } = FileManagerPanelStore();
@@ -68,13 +69,13 @@ const useUploadTable = () => {
 		}
 	};
 
-	const downloadFile = async (path: string) => {
+	const getFileDownloadUrl = async (path: string, toastMessage: string) => {
 		const id = toast(CustomProgressBar, {
 			progress: 0,
 			customProgressBar: true,
 			closeButton: false,
 			data: {
-				message: 'Seu download começará em breve.',
+				message: toastMessage,
 			},
 		});
 
@@ -85,6 +86,34 @@ const useUploadTable = () => {
 		const result = await getFileDownloadUrlAction(path);
 
 		toast.done(id);
+
+		return result;
+	};
+
+	const getCopyFile = async (path: string) => {
+		const toastMessage = 'Estamos buscando seu link, só um momento';
+
+		const result = await getFileDownloadUrl(path, toastMessage);
+
+		if (result?.error || !result?.data) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+			return;
+		}
+
+		const success = copyText(result?.data);
+
+		if (!success) {
+			toast.error('Não foi possível copiar o link');
+			return;
+		}
+
+		toast.success('Link de download copiado');
+	};
+
+	const downloadFile = async (path: string) => {
+		const toastMessage = 'Seu download começará em breve.';
+
+		const result = await getFileDownloadUrl(path, toastMessage);
 
 		if (result?.error || !result?.data) {
 			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
@@ -123,6 +152,7 @@ const useUploadTable = () => {
 		handleUploadFiles,
 		downloadFile,
 		deleteFile,
+		getCopyFile,
 	};
 };
 

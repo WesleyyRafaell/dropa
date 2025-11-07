@@ -41,7 +41,8 @@ export const FilesRepositoryClient: IFilesRepository = {
 
 		if (sessionError || !session) throw new Error('Usuário não autenticado.');
 
-		const uploaded: { name: string; group_id: string; url: string; path: string }[] = [];
+		const uploaded: { name: string; group_id: string; url: string; path: string; size: number }[] =
+			[];
 
 		for (const file of files) {
 			const sanitizedName = sanitizeFileName(file.name);
@@ -86,6 +87,7 @@ export const FilesRepositoryClient: IFilesRepository = {
 					url: publicUrl,
 					group_id: groupId,
 					path,
+					size: file.size,
 				});
 			} catch (error) {
 				console.error(`Erro ao fazer upload de ${sanitizedName}:`, error);
@@ -104,6 +106,7 @@ export const FilesRepositoryClient: IFilesRepository = {
 					name: file.name,
 					path: file.path,
 					url: file.url,
+					size: file.size,
 				})),
 			)
 			.select();

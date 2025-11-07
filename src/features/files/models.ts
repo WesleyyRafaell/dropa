@@ -12,4 +12,5 @@ export interface getAllFilesResponse {
 	url: string;
 	created_at: string;
 	fileName: string;
+	size: number;
 }
