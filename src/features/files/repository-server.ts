@@ -12,6 +12,9 @@ export interface IFilesRepository {
 		fileId: string,
 		path: string,
 	): Promise<{ success: true } | { success: false; error: string }>;
+	getShortLink(
+		longUrl: string,
+	): Promise<{ success: true; data: { link: string } } | { success: false; error: string }>;
 }
 
 export const FilesRepositoryServer: IFilesRepository = {
@@ -56,5 +59,24 @@ export const FilesRepositoryServer: IFilesRepository = {
 		if (result[0].error || result[1].error) return { success: false, error: 'Erro na requisição' };
 
 		return { success: true };
+	},
+	async getShortLink(longUrl: string) {
+		const response = await fetch('https://api-ssl.bitly.com/v4/shorten', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ long_url: longUrl }),
+		});
+
+		if (!response.ok) return { success: false, error: 'Erro na requisição' };
+
+		const data = await response.json();
+
+		return {
+			success: true,
+			data: data,
+		};
 	},
 };

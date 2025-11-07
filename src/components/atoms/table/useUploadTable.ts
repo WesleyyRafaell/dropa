@@ -100,7 +100,15 @@ const useUploadTable = () => {
 			return;
 		}
 
-		const success = copyText(result?.data);
+		// const shortUrl = await getShortLinkAction(result?.data);
+
+		// if (!shortUrl.data) {
+		// 	toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+		// 	return;
+		// }
+
+		// const success = copyText(shortUrl?.data?.link || '');
+		const success = copyText(result?.data || '');
 
 		if (!success) {
 			toast.error('Não foi possível copiar o link');

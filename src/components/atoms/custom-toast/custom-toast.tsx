@@ -54,8 +54,8 @@ const CustomProgressBar = ({
 					cy="100"
 					fill="transparent"
 					stroke="#e0e0e0"
-					stroke-width="6"
-					stroke-dasharray={`${strokeDash}px`}
+					strokeWidth="6"
+					strokeDasharray={`${strokeDash}px`}
 					strokeDashoffset="0"
 				/>
 				<circle
@@ -63,10 +63,10 @@ const CustomProgressBar = ({
 					cx="100"
 					cy="100"
 					stroke="#76e5b1"
-					stroke-width="16px"
-					stroke-linecap="round"
+					strokeWidth="16px"
+					strokeLinecap="round"
 					fill="transparent"
-					stroke-dasharray={`${strokeDash}px`}
+					strokeDasharray={`${strokeDash}px`}
 					{...attributes}
 				/>
 			</svg>
