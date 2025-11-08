@@ -1,7 +1,7 @@
-import { Table } from '@/components/atoms';
 import { CardText, NewCard } from '@/components/molecules';
 import React from 'react';
 import useFileManagerPanel from './useFileManagerPanel';
+import Table from '../table/table';
 
 const FileManagerPanel = () => {
 	const {

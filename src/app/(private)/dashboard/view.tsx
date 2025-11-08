@@ -4,7 +4,7 @@ import { FolderContainer, Logo } from '@/components/atoms';
 import { VscNewFolder } from 'react-icons/vsc';
 import { IGroup } from '@/features/groups/models';
 import useDashboard from './useDashboard';
-import FileManagerPanel from '@/components/organisms';
+import { FileManagerPanel } from '@/components/organisms';
 
 export interface IViewProps {
 	groups?: IGroup[];

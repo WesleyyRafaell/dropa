@@ -8,6 +8,7 @@ import { RiFileDownloadLine } from 'react-icons/ri';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import { formatFileSize } from '@/utils/files';
 import { FaRegCopy } from 'react-icons/fa';
+import { Dropzone } from '@/components/atoms';
 
 interface ITableProps {
 	groupId: string;
@@ -21,7 +22,6 @@ const Table = ({ groupId }: ITableProps) => {
 		getCopyFile,
 		uploadingItens,
 		deleteFilesLoading,
-		fileInputRef,
 		filesByGroup,
 		filesLoading,
 	} = useUploadTable();
@@ -36,15 +36,10 @@ const Table = ({ groupId }: ITableProps) => {
 			{!filesLoading ? (
 				<>
 					<div className="flex flex-col justify-center items-center gap-3 mb-6">
-						<input
-							ref={fileInputRef}
-							type="file"
-							className="file-input file-input-primary"
-							onChange={(e) => handleUploadFiles(groupId, e.target.files)}
-							multiple
-						/>
+						<Dropzone id={groupId} changeDropzone={(id, files) => handleUploadFiles(id, files)} />
+
 						{uploadingItens?.length ? (
-							<ul className="list bg-base-100 rounded-box shadow-md">
+							<ul className="list w-full bg-base-100 rounded-box shadow-md">
 								<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
 									Subindo seus arquivos, aguarde um pouco
 								</li>
@@ -63,7 +58,6 @@ const Table = ({ groupId }: ITableProps) => {
 					</div>
 					<div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 						<table className="table">
-							{/* head */}
 							<thead>
 								<tr>
 									<th></th>

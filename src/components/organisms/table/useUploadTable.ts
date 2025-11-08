@@ -2,7 +2,7 @@ import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 
 import { useUserStore } from '@/store/user-store';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { uploadGroupFilesAction } from '@/features/files/action-client';
 import {
@@ -11,14 +11,13 @@ import {
 	getFilesByGroupAction,
 } from '@/features/files/action-server';
 import { getAllFilesResponse } from '@/features/files/models';
-import CustomProgressBar from '../custom-toast/custom-toast';
+import CustomProgressBar from '../../atoms/custom-toast/custom-toast';
 import { copyText } from '@/utils/text';
 
 const useUploadTable = () => {
 	const { groupId } = FileManagerPanelStore();
 	const [uploadingItens, setUploadingItens] = useState<string[]>([]);
 	const [filesByGroup, setFilesByGroup] = useState<getAllFilesResponse[]>([]);
-	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [filesLoading, setFilesLoading] = useState(false);
 	const [deleteFilesLoading, setDeleteFilesLoading] = useState(false);
 	const { user } = useUserStore();
@@ -40,7 +39,7 @@ const useUploadTable = () => {
 		setFilesByGroup(result?.data);
 	};
 
-	const handleUploadFiles = async (groupId: string, files: FileList | null) => {
+	const handleUploadFiles = async (groupId: string, files: File[] | null) => {
 		if (!files) return;
 
 		for (const file of files) {
@@ -64,9 +63,6 @@ const useUploadTable = () => {
 		setFilesByGroup((prevState) => [...result?.data, ...prevState]);
 		toast.success('Sucesso no upload ❤️');
 		setUploadingItens([]);
-		if (fileInputRef.current) {
-			fileInputRef.current.value = '';
-		}
 	};
 
 	const getFileDownloadUrl = async (path: string, toastMessage: string) => {
@@ -153,7 +149,6 @@ const useUploadTable = () => {
 
 	return {
 		uploadingItens,
-		fileInputRef,
 		filesByGroup,
 		filesLoading,
 		deleteFilesLoading,
