@@ -7,6 +7,16 @@ interface ILoginActionProps {
 	password: string;
 }
 
+export async function getUserAction() {
+	const result = await SupabaseAuthRepository.getUser();
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true, data: result.user };
+}
+
 export async function loginWithEmailAndPasswordAction({ email, password }: ILoginActionProps) {
 	const result = await SupabaseAuthRepository.signInWithEmailAndPassword(email, password);
 

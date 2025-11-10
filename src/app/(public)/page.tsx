@@ -1,4 +1,5 @@
 import { ButtonLink } from '@/components/atoms';
+import { getUserAction } from '@/features/auth/action';
 import {
 	ArrowRight,
 	Upload,
@@ -16,7 +17,9 @@ import {
 	Heart,
 } from 'lucide-react';
 
-export default function Home() {
+export default async function Home() {
+	const user = await getUserAction();
+
 	return (
 		<div className="min-h-screen">
 			{/* Hero Section */}
@@ -50,11 +53,19 @@ export default function Home() {
 							everything from anywhere, anytime.
 						</p>
 
-						<div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-							<ButtonLink link="/login" text="Login" />
+						{!user.data ? (
+							<div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+								<ButtonLink link="/login" text="Login" />
 
-							<ButtonLink type="secondary" link="/register" text="Cadastro" />
-						</div>
+								<ButtonLink type="secondary" link="/register" text="Cadastro" />
+							</div>
+						) : null}
+
+						{user.data ? (
+							<div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+								<ButtonLink link="/dashboard" text="Dashboard" />
+							</div>
+						) : null}
 
 						{/* Feature Icons */}
 						<div className="flex justify-center gap-8 md:gap-16 mb-16">
