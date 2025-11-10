@@ -7,6 +7,8 @@ import { useUserStore } from '@/store/user-store';
 import { toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
+import { logOutAction } from '@/features/auth/action';
+import { redirect } from 'next/navigation';
 
 const useDashboard = ({ groups }: IViewProps) => {
 	const { user } = useUserStore();
@@ -80,10 +82,22 @@ const useDashboard = ({ groups }: IViewProps) => {
 		setGroupName(name || '');
 	};
 
+	const logOut = async () => {
+		const result = await logOutAction();
+
+		if (result?.error) {
+			toast.error(result?.error || 'Foi mal, algum erro aconteceu.');
+		}
+
+		toast.success('Você saiu com sucesso');
+		redirect('/');
+	};
+
 	return {
 		isPending,
 		loadingDeleteGroup,
 		groupList,
+		logOut,
 		handleCreteNewGroup,
 		handleEditNewGroup,
 		handleDeleteGroup,

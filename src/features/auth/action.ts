@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { SupabaseAuthRepository } from './repository';
 
 interface ILoginActionProps {
@@ -30,8 +29,6 @@ export async function logOutAction() {
 	const result = await SupabaseAuthRepository.logOut();
 
 	if (!result.success) return { success: false, error: result.error };
-
-	redirect('/');
 }
 
 export async function signUpAction(email: string, password: string) {

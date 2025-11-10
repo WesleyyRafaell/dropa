@@ -17,6 +17,7 @@ const View = ({ groups }: IViewProps) => {
 		handleEditNewGroup,
 		handleDeleteGroup,
 		handleSelectGroup,
+		logOut,
 		isPending,
 		loadingDeleteGroup,
 	} = useDashboard({ groups });
@@ -24,8 +25,12 @@ const View = ({ groups }: IViewProps) => {
 	return (
 		<div className="flex justify-center">
 			<div className="w-4xl flex flex-col gap-7">
-				<div className="bg-white p-4 rounded-b-3xl">
+				<div className="flex items-center justify-between bg-white p-4 rounded-b-3xl">
 					<Logo type="secondary" />
+
+					<button onClick={logOut} className="btn btn-primary btn-outline border-0">
+						Sair
+					</button>
 				</div>
 				<div className="flex flex-col gap-7">
 					<div className="bg-white rounded-3xl p-4">
