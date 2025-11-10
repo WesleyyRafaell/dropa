@@ -1,6 +1,12 @@
 import { Logo } from '@/components/atoms';
+import { getUserAction } from '@/features/auth/action';
+import { redirect } from 'next/navigation';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+	const user = await getUserAction();
+
+	if (user?.success && user.data) redirect('/dashboard');
+
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-900 to-purple-700 flex items-center justify-center px-4 py-8">
 			<div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce"></div>
