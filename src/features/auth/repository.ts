@@ -2,6 +2,7 @@ import { supabaseServer } from '@/lib/server';
 import { Provider, User } from '@supabase/supabase-js';
 
 export interface IAuthRepository {
+	getUser(): Promise<{ success: true; user: User } | { success: false; error: string }>;
 	signInWithEmailAndPassword(
 		email: string,
 		password: string,
@@ -19,6 +20,18 @@ export interface IAuthRepository {
 }
 
 export const SupabaseAuthRepository: IAuthRepository = {
+	async getUser() {
+		const supabase = await supabaseServer();
+
+		const { data, error } = await supabase.auth.getUser();
+
+		if (error) return { success: false, error: error.message };
+
+		return {
+			success: true,
+			user: data.user,
+		};
+	},
 	async signInWithEmailAndPassword(email, password) {
 		const supabase = await supabaseServer();
 
