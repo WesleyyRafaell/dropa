@@ -232,7 +232,7 @@ export default async function Home() {
 					</h2>
 
 					<p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-2xl mx-auto leading-relaxed">
-						Junte-se aos nossosusuários que já confiam no Dropa para manter sua vida digital
+						Junte-se aos nossos usuários que já confiam no Dropa para manter sua vida digital
 						organizada e acessível.
 					</p>
 
