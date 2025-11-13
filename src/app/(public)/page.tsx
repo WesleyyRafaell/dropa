@@ -1,20 +1,6 @@
 import { ButtonLink } from '@/components/atoms';
-import {
-	ArrowRight,
-	Upload,
-	FileText,
-	Image,
-	Shield,
-	Zap,
-	Globe,
-	Lock,
-	Smartphone,
-	Cloud,
-	FolderOpen,
-	Share2,
-	Star,
-	Heart,
-} from 'lucide-react';
+import { ArrowRight, Upload, FileText, Image, FolderOpen, Share2, Star, Heart } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
 	return (
@@ -38,16 +24,16 @@ export default function Home() {
 				<div className="relative z-10 text-center text-white px-4 max-w-6xl mx-auto">
 					<div className="animate-fade-in">
 						<h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-							Store Everything,
+							Armazene simples
 							<br />
 							<span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-								Anywhere
+								rápido e facil.
 							</span>
 						</h1>
 
 						<p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-							Dropa makes it simple to store your text, photos, and files securely. Access
-							everything from anywhere, anytime.
+							Dropa facilita o armazenamento seguro de seus textos, fotos e arquivos. Acesse tudo de
+							qualquer lugar, a qualquer hora.
 						</p>
 
 						<div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -62,19 +48,19 @@ export default function Home() {
 								<div className="w-16 h-16 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
 									<FileText className="h-8 w-8" />
 								</div>
-								<p className="text-sm font-medium">Text</p>
+								<p className="text-sm font-medium">Textos</p>
 							</div>
 							<div className="text-center group">
 								<div className="w-16 h-16 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
 									<Image className="h-8 w-8" />
 								</div>
-								<p className="text-sm font-medium">Photos</p>
+								<p className="text-sm font-medium">Fotos</p>
 							</div>
 							<div className="text-center group">
 								<div className="w-16 h-16 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
 									<Upload className="h-8 w-8" />
 								</div>
-								<p className="text-sm font-medium">Files</p>
+								<p className="text-sm font-medium">Arquivos</p>
 							</div>
 						</div>
 					</div>
@@ -82,7 +68,7 @@ export default function Home() {
 			</section>
 
 			{/* Features Section */}
-			<section className="py-20 bg-gray-50">
+			{/* <section className="py-20 bg-gray-50">
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="text-center mb-16">
 						<h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
@@ -145,45 +131,46 @@ export default function Home() {
 						))}
 					</div>
 				</div>
-			</section>
+			</section> */}
 
 			{/* How It Works Section */}
 			<section className="py-20 bg-white">
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="text-center mb-16">
 						<h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-							How{' '}
+							Como{' '}
 							<span className="bg-gradient-to-r from-blue-900 to-purple-700 bg-clip-text text-transparent">
 								Dropa
 							</span>{' '}
-							Works
+							Funciona
 						</h2>
 						<p className="text-xl text-gray-600 max-w-3xl mx-auto">
-							Getting started is simple. Just three steps to organize your digital life.
+							Começar é simples. Apenas três passos para organizar sua vida digital.
 						</p>
 					</div>
 
 					<div className="grid md:grid-cols-3 gap-8">
 						{[
 							{
-								icon: Upload,
-								number: '01',
-								title: 'Upload',
-								description:
-									'Drag and drop your files, paste text, or upload photos directly to Dropa.',
-							},
-							{
 								icon: FolderOpen,
-								number: '02',
+								number: '01',
 								title: 'Organize',
 								description:
-									'Your content is automatically organized and searchable for easy access.',
+									'Crie um grupo, no dropa cada arquivo é separado por grupo para facilitar a organização dos seus arquivos',
+							},
+							{
+								icon: Upload,
+								number: '02',
+								title: 'Guarde',
+								description:
+									'Arraste e solte seus arquivos e fotos diretamente no Dropa. Ou use a sessão de lembrentes para anotar seus itens do dia a dia',
 							},
 							{
 								icon: Share2,
 								number: '03',
-								title: 'Access',
-								description: 'Access your files from any device, anywhere in the world, anytime.',
+								title: 'Acesse',
+								description:
+									'Acesse seus arquivos de qualquer dispositivo, em qualquer lugar do mundo, a qualquer hora.',
 							},
 						].map((step, index) => (
 							<div key={index} className="text-center relative">
@@ -226,16 +213,16 @@ export default function Home() {
 					</div>
 
 					<h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-						Ready to Get
+						Pronto para a
 						<br />
 						<span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-							Organized?
+							organização?
 						</span>
 					</h2>
 
 					<p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-2xl mx-auto leading-relaxed">
-						Join thousands of users who trust Dropa to keep their digital life organized and
-						accessible.
+						Junte-se aos nossosusuários que já confiam no Dropa para manter sua vida digital
+						organizada e acessível.
 					</p>
 
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -247,10 +234,6 @@ export default function Home() {
 							Contact Sales
 						</button>
 					</div>
-
-					<p className="text-sm text-blue-200 mt-6">
-						No credit card required • Free 14-day trial • Cancel anytime
-					</p>
 				</div>
 			</section>
 
@@ -265,12 +248,12 @@ export default function Home() {
 								</span>
 							</h3>
 							<p className="text-gray-400 leading-relaxed max-w-md">
-								The modern storage solution for all your digital content. Store text, photos, and
-								files securely and access them anywhere.
+								A solução de armazenamento moderna para todo o seu conteúdo digital. Armazene
+								textos, fotos e arquivos com segurança e acesse-os de qualquer lugar.
 							</p>
 						</div>
 
-						<div>
+						{/* <div>
 							<h4 className="font-semibold mb-4">Product</h4>
 							<ul className="space-y-2 text-gray-400">
 								<li>
@@ -320,15 +303,22 @@ export default function Home() {
 									</a>
 								</li>
 							</ul>
-						</div>
+						</div> */}
 					</div>
 
 					<hr className="border-gray-800 my-8" />
 
 					<div className="flex flex-col md:flex-row justify-between items-center">
-						<p className="text-gray-400 text-sm">© 2024 Dropa. All rights reserved.</p>
+						<p className="text-gray-400 text-sm">© 2025 Dropa. All rights reserved.</p>
 						<p className="text-gray-400 text-sm flex items-center gap-1 mt-4 md:mt-0">
-							Made with <Heart className="h-4 w-4 text-red-500" /> for productivity
+							Made with <Heart className="h-4 w-4 text-red-500" /> for
+							<Link
+								className="underline"
+								target="_blank"
+								href="https://www.linkedin.com/in/wesleyrafael10s/"
+							>
+								Wesley
+							</Link>
 						</p>
 					</div>
 				</div>
