@@ -13,9 +13,11 @@ import {
 import { getAllFilesResponse } from '@/features/files/models';
 import CustomProgressBar from '../../atoms/custom-toast/custom-toast';
 import { copyText } from '@/utils/text';
+import useGetLimitUploadFiles from '@/hooks/getLimitUploadFiles';
 
 const useUploadTable = () => {
 	const { groupId } = FileManagerPanelStore();
+	const { updateCurrentUserLimitUploadSize } = useGetLimitUploadFiles();
 	const [uploadingItens, setUploadingItens] = useState<string[]>([]);
 	const [filesByGroup, setFilesByGroup] = useState<getAllFilesResponse[]>([]);
 	const [filesLoading, setFilesLoading] = useState(false);
@@ -63,6 +65,7 @@ const useUploadTable = () => {
 		setFilesByGroup((prevState) => [...result?.data, ...prevState]);
 		toast.success('Sucesso no upload ❤️');
 		setUploadingItens([]);
+		updateCurrentUserLimitUploadSize();
 	};
 
 	const getFileDownloadUrl = async (path: string, toastMessage: string) => {
@@ -145,6 +148,7 @@ const useUploadTable = () => {
 		toast.success('Sucesso na remoção do arquivo');
 		setDeleteFilesLoading(false);
 		getAllFilesByGroup(groupId);
+		updateCurrentUserLimitUploadSize();
 	};
 
 	return {
