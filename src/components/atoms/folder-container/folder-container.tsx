@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMobile } from '@/hooks/isMobile';
 import { useState } from 'react';
 import { BsTrash3Fill } from 'react-icons/bs';
 
@@ -23,6 +24,7 @@ const FolderContainer = ({
 	editGroup,
 	selectGroup,
 }: IFolderContainerProps) => {
+	const isMobile = useIsMobile();
 	const [inputValue, setInputValue] = useState(name);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +41,7 @@ const FolderContainer = ({
 					onClick={() => {
 						(document.getElementById(id || '') as HTMLDialogElement)?.showModal();
 					}}
-					className="indicator-item badge badge-primary cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+					className={`indicator-item badge badge-primary cursor-pointer group-hover:opacity-100 transition-opacity ${isMobile ? 'opacity-100' : 'opacity-0 '}`}
 				>
 					<BsTrash3Fill />
 				</span>

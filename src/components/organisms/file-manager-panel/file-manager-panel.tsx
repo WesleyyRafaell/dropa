@@ -48,7 +48,7 @@ const FileManagerPanel = () => {
 							) : null}
 
 							{!loadingReminders ? (
-								<div className="grid grid-cols-4 gap-4">
+								<div className="grid grid-cols-1 md:grid-cols-4 gap-8  md:gap-4">
 									<NewCard
 										createNewReminder={createNewReminder}
 										isPendingCreateNewReminder={isPendingCreateNewReminder}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Card } from '@/components/atoms';
+import { useIsMobile } from '@/hooks/isMobile';
 import React, { useState } from 'react';
 import { BsTrash3Fill } from 'react-icons/bs';
 
@@ -19,6 +20,7 @@ const CardText = ({
 	deleteReminder,
 	editGroup,
 }: ICardTextProps) => {
+	const isMobile = useIsMobile();
 	const [inputValue, setInputValue] = useState(text);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -29,16 +31,16 @@ const CardText = ({
 	};
 
 	return (
-		<div className="indicator group w-48">
+		<div className="indicator group w-full">
 			<span
 				onClick={() => {
 					(document.getElementById(reminderId || '') as HTMLDialogElement)?.showModal();
 				}}
-				className="indicator-item badge  badge-primary cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+				className={`indicator-item badge  badge-primary cursor-pointer group-hover:opacity-100 transition-opacity ${isMobile ? 'opacity-100' : 'opacity-0 '}`}
 			>
 				<BsTrash3Fill />
 			</span>
-			<Card className="mt-3.5">
+			<Card className="mt-3.5 w-full">
 				<textarea
 					className="textarea h-24 bg-transparent
 					border-white textarea-md  focus:shadow-none

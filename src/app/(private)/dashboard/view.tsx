@@ -26,7 +26,7 @@ const View = ({ groups }: IViewProps) => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="w-4xl flex flex-col gap-7">
+			<div className="w-full md:w-4xl flex flex-col gap-7">
 				<Header email={user?.email || ''} logOut={logOut} />
 				<div className="flex flex-col gap-7">
 					<div className="bg-white rounded-3xl p-4">
