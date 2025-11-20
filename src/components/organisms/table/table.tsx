@@ -6,9 +6,10 @@ import useUploadTable from './useUploadTable';
 import { formatIsoToDate } from '@/utils/formatDate';
 import { RiFileDownloadLine } from 'react-icons/ri';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
-import { formatFileSize } from '@/utils/files';
+import { formatFileSize, MAX_UPLOAD_LIMIT_FREE_ACCOUNT } from '@/utils/files';
 import { FaRegCopy } from 'react-icons/fa';
 import { Dropzone } from '@/components/atoms';
+import { CurrentLimiteUploadSizeStore } from '@/store/current-limit-upload-size';
 
 interface ITableProps {
 	groupId: string;
@@ -25,6 +26,7 @@ const Table = ({ groupId }: ITableProps) => {
 		filesByGroup,
 		filesLoading,
 	} = useUploadTable();
+	const { currentLimiteUploadSize } = CurrentLimiteUploadSizeStore();
 
 	return (
 		<div>
@@ -35,27 +37,29 @@ const Table = ({ groupId }: ITableProps) => {
 			) : null}
 			{!filesLoading ? (
 				<>
-					<div className="flex flex-col justify-center items-center gap-3 mb-6">
-						<Dropzone id={groupId} changeDropzone={(id, files) => handleUploadFiles(id, files)} />
+					{currentLimiteUploadSize <= MAX_UPLOAD_LIMIT_FREE_ACCOUNT ? (
+						<div className="flex flex-col justify-center items-center gap-3 mb-6">
+							<Dropzone id={groupId} changeDropzone={(id, files) => handleUploadFiles(id, files)} />
 
-						{uploadingItens?.length ? (
-							<ul className="list w-full bg-base-100 rounded-box shadow-md">
-								<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-									Subindo seus arquivos, aguarde um pouco
-								</li>
-								{uploadingItens?.map((item) => (
-									<li className="list-row" key={item}>
-										<div>
-											<span className="loading loading-ring loading-sm text-primary text-2xl"></span>
-										</div>
-										<div>
-											<div>{item}</div>
-										</div>
+							{uploadingItens?.length ? (
+								<ul className="list w-full bg-base-100 rounded-box shadow-md">
+									<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+										Subindo seus arquivos, aguarde um pouco
 									</li>
-								))}
-							</ul>
-						) : null}
-					</div>
+									{uploadingItens?.map((item) => (
+										<li className="list-row" key={item}>
+											<div>
+												<span className="loading loading-ring loading-sm text-primary text-2xl"></span>
+											</div>
+											<div>
+												<div>{item}</div>
+											</div>
+										</li>
+									))}
+								</ul>
+							) : null}
+						</div>
+					) : null}
 					<div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 						<table className="table">
 							<thead>

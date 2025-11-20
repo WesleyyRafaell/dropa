@@ -1,11 +1,10 @@
 'use client';
 
-import { FolderContainer, Logo } from '@/components/atoms';
+import { FolderContainer } from '@/components/atoms';
 import { VscNewFolder } from 'react-icons/vsc';
 import { IGroup } from '@/features/groups/models';
 import useDashboard from './useDashboard';
-import { FileManagerPanel } from '@/components/organisms';
-import { IoIosLogOut } from 'react-icons/io';
+import { FileManagerPanel, Header } from '@/components/organisms';
 import { useUserStore } from '@/store/user-store';
 
 export interface IViewProps {
@@ -28,24 +27,7 @@ const View = ({ groups }: IViewProps) => {
 	return (
 		<div className="flex justify-center">
 			<div className="w-4xl flex flex-col gap-7">
-				<div className=" bg-white p-4 rounded-b-3xl">
-					<Logo type="secondary" />
-
-					<div className="flex items-center justify-between">
-						<div>
-							<p className="text-xs text-gray-600">{user?.email}</p>
-						</div>
-
-						<div className="tooltip max-w-40" data-tip="Sair">
-							<div
-								onClick={logOut}
-								className="w-11 h-11 bg-white cursor-pointer flex justify-center items-center rounded-full hover:bg-primary text-primary hover:text-white transition-all"
-							>
-								<IoIosLogOut className="text-2xl" />
-							</div>
-						</div>
-					</div>
-				</div>
+				<Header email={user?.email || ''} logOut={logOut} />
 				<div className="flex flex-col gap-7">
 					<div className="bg-white rounded-3xl p-4">
 						<div>

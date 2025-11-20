@@ -1,7 +1,7 @@
 'use client';
 
 import { createGroupAction, deleteGroupAction, editGroupAction } from '@/features/groups/action';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { IViewProps } from './view';
 import { useUserStore } from '@/store/user-store';
 import { toast } from 'react-toastify';
@@ -9,14 +9,21 @@ import { useDebouncedCallback } from 'use-debounce';
 import { FileManagerPanelStore } from '@/store/file-manager-panel-store';
 import { logOutAction } from '@/features/auth/action';
 import { redirect } from 'next/navigation';
+import useGetLimitUploadFiles from '@/hooks/getLimitUploadFiles';
 
 const useDashboard = ({ groups }: IViewProps) => {
+	const { updateCurrentUserLimitUploadSize } = useGetLimitUploadFiles();
 	const { user } = useUserStore();
 	const [isPending, startTransition] = useTransition();
 	const [loadingDeleteGroup, setLoadingDeleteGroup] = useState(false);
 	const [, startTransitionEdit] = useTransition();
 	const [groupList, setGroupList] = useState(groups || []);
 	const { setGroupId, setGroupName } = FileManagerPanelStore();
+
+	useEffect(() => {
+		updateCurrentUserLimitUploadSize();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user]);
 
 	const handleCreteNewGroup = () => {
 		startTransition(async () => {

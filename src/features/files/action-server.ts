@@ -2,6 +2,16 @@
 
 import { FilesRepositoryServer } from './repository-server';
 
+export async function getFilesByUserIdAction(userId: string) {
+	const result = await FilesRepositoryServer.getFilesByUserId(userId);
+
+	if (!result.success) {
+		return { success: false, error: result.error };
+	}
+
+	return { success: true, data: result?.data };
+}
+
 export async function getFilesByGroupAction(groupId: string) {
 	const result = await FilesRepositoryServer.getFilesByGroup(groupId);
 

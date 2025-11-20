@@ -2,6 +2,9 @@ import { supabaseServer } from '@/lib/server';
 import { getAllFilesResponse } from './models';
 
 export interface IFilesRepository {
+	getFilesByUserId(
+		userId: string,
+	): Promise<{ success: true; data: getAllFilesResponse[] } | { success: false; error: string }>;
 	getFilesByGroup(
 		groupId: string,
 	): Promise<{ success: true; data: getAllFilesResponse[] } | { success: false; error: string }>;
@@ -18,6 +21,22 @@ export interface IFilesRepository {
 }
 
 export const FilesRepositoryServer: IFilesRepository = {
+	async getFilesByUserId(userId: string) {
+		const supabase = await supabaseServer();
+
+		const { data: files, error } = await supabase
+			.from('dropa_files')
+			.select('*')
+			.eq('user_id', userId)
+			.order('created_at', { ascending: false });
+
+		if (error) return { success: false, error: error.message };
+
+		return {
+			success: true,
+			data: files,
+		};
+	},
 	async getFilesByGroup(groupId: string) {
 		const supabase = await supabaseServer();
 

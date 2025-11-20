@@ -107,6 +107,7 @@ export const FilesRepositoryClient: IFilesRepository = {
 					path: file.path,
 					url: file.url,
 					size: file.size,
+					user_id: userId,
 				})),
 			)
 			.select();
