@@ -30,7 +30,7 @@ export default async function Home() {
 							Armazene simples
 							<br />
 							<span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-								rápido e facil.
+								rápido e fácil.
 							</span>
 						</h1>
 

@@ -3,7 +3,7 @@ import { supabaseClient } from '@/lib/client';
 import { v4 as uuidv4 } from 'uuid';
 import Uppy from '@uppy/core';
 import Tus from '@uppy/tus';
-import { MAX_FILE_SIZE, sanitizeFileName } from '@/utils/files';
+import { MAX_UPLOAD_LIMIT_FREE_ACCOUNT, sanitizeFileName } from '@/utils/files';
 
 export interface IFilesRepository {
 	uploadGroupFiles({
@@ -21,7 +21,7 @@ export const FilesRepositoryClient: IFilesRepository = {
 
 		if (files.length === 0) throw new Error('Nenhum arquivo enviado.');
 
-		const tooLargeFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+		const tooLargeFiles = files.filter((file) => file.size > MAX_UPLOAD_LIMIT_FREE_ACCOUNT);
 
 		if (tooLargeFiles.length > 0) {
 			const fileNames = tooLargeFiles.map((f) => f.name).join(', ');
